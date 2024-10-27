@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Find Film</string>
+    <string name="button_1">МЕНЮ</string>
+    <string name="button_2">ИЗБРАННОЕ</string>
+    <string name="button_3">ПОСМОТРЕТЬ ПОЗЖЕ</string>
+    <string name="button_4">ПОДБОРКИ</string>
+    <string name="button_5">НАСТРОЙКИ</string>
+    <string name="disclaimer">Постеры предоставлены https://www.movieposters.com/</string>
+    <string name="favorite_string">Избранное</string>
+    <string name="search_string">Поиск</string>
+    <string name="more">Доп. функции</string>
+    <string name="settings_string">Настройки</string>
+    <string name="menu_string">Меню</string>
+    <string name="watch_later_string">Смотреть позже</string>
+    <string name="different_string">Подборки</string>
+
 </resources>

@@ -2,6 +2,13 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.FindFilm" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
+        <item name="colorAccent">#FF000000</item>
+        <item name="colorPrimaryDark">#FF000000</item>
+        <item name="colorPrimary">#FF000000</item>
+        <item name="color">#FF000000</item>
+        <item name="android:textColorLink">@color/white</item>
+        <item name="android:textColor">@color/white</item>
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+
 </resources>
