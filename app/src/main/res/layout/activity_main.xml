@@ -53,6 +53,7 @@
 
             >
 
+
             <Button
                 android:id="@+id/button1"
                 android:layout_width="match_parent"
@@ -76,6 +77,18 @@
                 android:text="@string/button_2"
                 android:textColor="@color/yellow"
                 android:textSize="16sp" />
+
+
+    <FrameLayout
+        android:id="@+id/menu_top"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#203ACC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+    </FrameLayout>
 
             <Button
                 android:id="@+id/button3"
