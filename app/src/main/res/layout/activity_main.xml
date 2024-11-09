@@ -6,7 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/menu_buttons"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    tools:layout_editor_absoluteX="-7dp"
+    tools:layout_editor_absoluteY="76dp">
+
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -27,8 +30,156 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <!--КНОПКИ МЕНЮ ПО ЦЕНТРУ ЭКРАНА-->
-    <!--<LinearLayout
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:autoLink="web"
+        android:linksClickable="true"
+        android:text="@string/disclaimer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/posters" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/posters"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_margin="5dp"
+        android:elevation="10dp"
+        app:cardCornerRadius="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/laLaLand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/lalaland" />
+
+            <ImageView
+                android:id="@+id/rocky"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/rocky" />
+
+            <ImageView
+                android:id="@+id/raiders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/raiders" />
+
+            <ImageView
+                android:id="@+id/pulpfiction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/pulpfiction" />
+
+            <ImageView
+                android:id="@+id/interstellar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/interstellar" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/menu_navigation" />
+
+
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:columnCount="2"
+        android:layoutAnimation="@anim/layout_animation_posters"
+        android:orientation="horizontal"
+        android:useDefaultMargins="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <ImageView
+            android:id="@+id/imageViewTopLeft"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:stateListAnimator="@animator/selector_posters"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:srcCompat="@drawable/home_alone" />
+
+        <ImageView
+            android:id="@+id/imageViewBottomLeft"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:stateListAnimator="@animator/selector_posters"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewTopLeft"
+            app:srcCompat="@drawable/toy_story" />
+
+        <ImageView
+            android:id="@+id/imageViewTopRight"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:stateListAnimator="@animator/selector_posters"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageViewTopLeft"
+            app:layout_constraintTop_toTopOf="@+id/imageViewTopLeft"
+            app:srcCompat="@drawable/mononoke" />
+
+        <ImageView
+            android:id="@+id/imageViewBottomRight"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:stateListAnimator="@animator/selector_posters"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.687"
+            app:layout_constraintStart_toEndOf="@+id/imageViewTopLeft"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewTopRight"
+            app:srcCompat="@drawable/lord_rings" />
+    </GridLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--КНОПКИ МЕНЮ ПО ЦЕНТРУ ЭКРАНА
+    <LinearLayout
         android:id="@+id/menu_buttons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -128,8 +279,8 @@
 
         </LinearLayout>
     </LinearLayout>-->
-    <!--НИЖНИЙ КОНТЕЙНЕР ottom bar-->
-    <!--<FrameLayout
+    <!--НИЖНИЙ КОНТЕЙНЕР ottom bar
+    <FrameLayout
         android:id="@+id/menu_bottom"
         android:layout_width="match_parent"
         android:layout_height="70dp"
@@ -139,88 +290,3 @@
         app:layout_constraintStart_toStartOf="parent"
         >
     </FrameLayout>-->
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:autoLink="web"
-        android:linksClickable="true"
-        android:text="@string/disclaimer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/posters" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/posters"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_margin="5dp"
-        android:elevation="10dp"
-        app:cardCornerRadius="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/laLaLand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/lalaland" />
-
-            <ImageView
-                android:id="@+id/rocky"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/rocky" />
-
-            <ImageView
-                android:id="@+id/raiders"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/raiders" />
-
-            <ImageView
-                android:id="@+id/pulpfiction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/pulpfiction" />
-
-            <ImageView
-                android:id="@+id/interstellar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_weight="1"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/interstellar" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/menu_navigation" />
-</androidx.constraintlayout.widget.ConstraintLayout>
-
