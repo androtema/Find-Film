@@ -6,4 +6,6 @@
     <color name="green">#3FB970</color>
     <color name="yellow">#FFEB3B</color>
     <color name="yellowEasy">#FFFD91</color>
+    <color name="colorAccent">#00FFEA</color>
+    <color name="colorPrimaryDark">#4E4E4E</color>
 </resources>
