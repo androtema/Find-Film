@@ -13,8 +13,7 @@
         android:theme="@style/Theme.FindFilm"
         tools:targetApi="31">
         <activity
-            android:name=".DetailsFragment"
-            android:exported="false" />
+            android:name=".DetailsFragment"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

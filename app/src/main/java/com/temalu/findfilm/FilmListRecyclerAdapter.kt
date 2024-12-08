@@ -2,11 +2,9 @@ package com.temalu.findfilm
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.databinding.FilmItemBinding
 
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
@@ -47,10 +45,6 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
         val diffResult = DiffUtil.calculateDiff(diff)
         items = list                                //обновляем "наш" список
         diffResult.dispatchUpdatesTo(this@FilmListRecyclerAdapter)
-        /*  без DiffUtil
-        items.clear()
-        items.addAll(list)
-        notifyDataSetChanged()*/
     }
 
     interface OnItemClickListener {

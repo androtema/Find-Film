@@ -26,24 +26,13 @@ class MainActivity : AppCompatActivity() {
         //смотрим корневой элемент в activity_main
         setContentView(binding.root)
 
+        //што-то встроенное
         enableEdgeToEdge()
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-
-        /*binding.topAppBar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.settings -> {
-                    Toast.makeText(this, "Настройки", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                else -> false
-            }
-        }*/
 
         setBottomToast()
 
@@ -76,6 +65,11 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.favorites -> {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragment_placeholder, FavoritesFragment())
+                        .addToBackStack(null)
+                        .commit()
                     Toast.makeText(this, "Избранное", Toast.LENGTH_SHORT).show()
                     true
                 }
@@ -98,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount == 1) {
             if (backPressedTime + TIME_INTERVAL > System.currentTimeMillis()) {
-                super.onBackPressed()
+                super.onBackPressedDispatcher.onBackPressed()
                 finish()
             } else {
                 Toast.makeText(this, "Чтобы выйти нажмите ещё раз", Toast.LENGTH_SHORT).show()
@@ -106,37 +100,13 @@ class MainActivity : AppCompatActivity() {
 
             backPressedTime = System.currentTimeMillis()
         } else {
-            super.onBackPressed()
+            super.onBackPressedDispatcher.onBackPressed()
         }
     }
 
+
     companion object {
         const val TIME_INTERVAL = 2000  //интервал времени для нажатия на back второй раз
+        val favoritesList: MutableList<Film> = emptyList<Film>().toMutableList()
     }
 }
-
-/*val button1: Button = findViewById(R.id.button1)
-button1.setOnClickListener{
-    Toast.makeText(applicationContext, "Меню", Toast.LENGTH_SHORT).show()
-}
-
-val button2: Button = findViewById(R.id.button2)
-button2.setOnClickListener{
-    Toast.makeText(applicationContext, "Избранное", Toast.LENGTH_SHORT).show()
-}
-
-val button3: Button = findViewById(R.id.button3)
-button3.setOnClickListener{
-    Toast.makeText(applicationContext, "Посмотреть позже", Toast.LENGTH_SHORT).show()
-}
-
-val button4: Button = findViewById(R.id.button4)
-button4.setOnClickListener{
-    Toast.makeText(applicationContext, "Подборки", Toast.LENGTH_SHORT).show()
-}
-
-val button5: Button = findViewById(R.id.button5)
-button5.setOnClickListener{
-    Toast.makeText(applicationContext, "Настройки", Toast.LENGTH_SHORT).show()
-}*/ //кликер кнопок и toast
-
