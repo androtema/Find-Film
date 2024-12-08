@@ -47,11 +47,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation (libs.androidx.coordinatorlayout)
+
     implementation(libs.androidx.navigation.fragment.ktx)
+    implementation (libs.material.v1120)
+    implementation(libs.androidx.viewpager2)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation (libs.material.v1120)
-    implementation(libs.androidx.viewpager2)
 
 }
