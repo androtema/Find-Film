@@ -18,7 +18,7 @@ class FilmDiff(private val oldList: List<Film>, private val newList: List<Film>)
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val old: Film = oldList[oldItemPosition]
-        val new: Film = newList[oldItemPosition]
+        val new: Film = newList[newItemPosition]
         return old.description == new.description &&
                 old.poster == new.poster
     }
