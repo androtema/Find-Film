@@ -1,20 +1,26 @@
 package com.temalu.findfilm
 
 import android.os.Bundle
-import android.util.Log
+import androidx.transition.TransitionManager
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.Scene
+import androidx.transition.Slide
+import androidx.transition.TransitionSet
 import com.temalu.findfilm.databinding.FragmentHomeBinding
+import com.temalu.findfilm.databinding.MergeHomeScreenContentBinding
 import java.util.Locale
 
 
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var bindingMerge: MergeHomeScreenContentBinding
+    private lateinit var bindingHomeFragment: FragmentHomeBinding
 
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
@@ -85,15 +91,34 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
-        return binding.root
+    ): View {
+        bindingHomeFragment = FragmentHomeBinding.inflate(layoutInflater)
+        bindingMerge = MergeHomeScreenContentBinding.inflate(layoutInflater)
+        return bindingMerge.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //добавление анимации появления home fragment
+        val scene = Scene.getSceneForLayout(
+            bindingHomeFragment.homeFragmentRoot,
+            R.layout.merge_home_screen_content,
+            requireContext()
+        )
+        val searchSlide = Slide(Gravity.TOP).addTarget(R.id.search_view)
+        val recyclerSlide = Slide(Gravity.BOTTOM).addTarget(R.id.main_recycler)
+        val customTransition = TransitionSet().apply {
+            duration = 500
+            addTransition(recyclerSlide)
+            addTransition(searchSlide)
+        }
+        TransitionManager.go(scene, customTransition)
+
+
+
         //находим наш RV
-        binding.mainRecycler.apply {
+        bindingMerge.mainRecycler.apply {
             //Инициализируем наш адаптер в конструктор передаем анонимно инициализированный интерфейс,
             filmsAdapter =
                 FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
@@ -114,13 +139,13 @@ class HomeFragment : Fragment() {
 
 
         //чтобы нажимать на всю площадь вью поиска
-        binding.searchView.setOnClickListener {
-            binding.searchView.isIconified = false
+        bindingMerge.searchView.setOnClickListener {
+            bindingMerge.searchView.isIconified = false
         }
 
 
         //Подключаем слушателя изменений введенного текста в поиска
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        bindingMerge.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             //Этот метод отрабатывает при нажатии кнопки "поиск" на софт клавиатуре
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -146,5 +171,6 @@ class HomeFragment : Fragment() {
                 return true
             }
         })
+
     }
 }
