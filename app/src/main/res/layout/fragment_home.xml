@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@drawable/menu_buttons"
+    android:background="@drawable/menu_buttons"
     android:id="@+id/home_fragment_root"
-    tools:context=".HomeFragment"/>
+    android:visibility="invisible"
+    tools:visibility="visible"
+    tools:context=".fragments.HomeFragment"/>

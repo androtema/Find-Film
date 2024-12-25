@@ -1,19 +1,25 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.fragments
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.transition.Slide
 import com.google.android.material.snackbar.Snackbar
+import com.temalu.findfilm.Film
+import com.temalu.findfilm.MainActivity
+import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
-import com.temalu.findfilm.databinding.FragmentHomeBinding
 
 class DetailsFragment : Fragment() {
+
+    init {
+        enterTransition = Slide(Gravity.END).apply { duration = 500 }
+    }
 
     private lateinit var detailsBinding: FragmentDetailsBinding
 

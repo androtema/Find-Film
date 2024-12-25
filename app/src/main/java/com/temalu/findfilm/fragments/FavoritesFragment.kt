@@ -1,24 +1,27 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.temalu.findfilm.AnimationHelper
+import com.temalu.findfilm.Film
+import com.temalu.findfilm.FilmListRecyclerAdapter
+import com.temalu.findfilm.MainActivity
+import com.temalu.findfilm.TopSpacingItemDecoration
 import com.temalu.findfilm.databinding.FragmentFavoritesBinding
 
 class FavoritesFragment : Fragment() {
 
     private lateinit var binding: FragmentFavoritesBinding
-
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentFavoritesBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -26,10 +29,12 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        AnimationHelper.performFragmentCircularRevealAnimation(binding.favoriteRoot, requireActivity(), 2)
+
         //ВЫЗОВ ФРАГМЕНТА ДЕТАЛЕЙ ФИЛЬМА
         binding.favoritesRecycler.apply {
             filmsAdapter =
-                FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener{
+                FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
                     override fun click(film: Film) {
                         (requireActivity() as MainActivity).launchDetailsFragment(film)
                     }
