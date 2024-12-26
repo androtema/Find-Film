@@ -1,21 +1,33 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.fragments
 
 import android.os.Bundle
-import android.util.Log
+import androidx.transition.TransitionManager
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Scene
+import androidx.transition.Slide
+import androidx.transition.TransitionSet
+import com.temalu.findfilm.AnimationHelper
+import com.temalu.findfilm.Film
+import com.temalu.findfilm.FilmListRecyclerAdapter
+import com.temalu.findfilm.MainActivity
+import com.temalu.findfilm.R
+import com.temalu.findfilm.TopSpacingItemDecoration
 import com.temalu.findfilm.databinding.FragmentHomeBinding
 import java.util.Locale
 
 
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
-
+    private lateinit var bindingHomeFragment: FragmentHomeBinding
+    private lateinit var searchView: SearchView
+    private lateinit var mainRecycler: RecyclerView
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
     val filmsDataBase: MutableList<Film> = mutableListOf(
@@ -80,20 +92,52 @@ class HomeFragment : Fragment() {
             "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
         ),
     )
-
+    var firstStart = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentHomeBinding.inflate(layoutInflater)
-        return binding.root
+    ): View {
+        bindingHomeFragment = FragmentHomeBinding.inflate(layoutInflater)
+        return bindingHomeFragment.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        AnimationHelper.performFragmentCircularRevealAnimation(
+            bindingHomeFragment.homeFragmentRoot,
+            requireActivity(),
+            1
+        )
+
+        //добавление анимации появления home fragment
+        //fragment_home - пустой экран (Scene 0) -> merge_home... (Scene 1) - содержимое экрана появляется
+        val scene = Scene.getSceneForLayout(
+            bindingHomeFragment.homeFragmentRoot,
+            R.layout.merge_home_screen_content,
+            requireContext()
+        )
+
+        if (firstStart){
+            val searchSlide = Slide(Gravity.TOP).addTarget(R.id.search_view)
+            val recyclerSlide = Slide(Gravity.BOTTOM).addTarget(R.id.main_recycler)
+            val customTransition = TransitionSet().apply {
+                duration = 500
+                addTransition(recyclerSlide)
+                addTransition(searchSlide)
+            }
+            TransitionManager.go(scene, customTransition)
+            firstStart = false
+        } else {
+            TransitionManager.go(scene)
+        }
+
+        searchView = scene.sceneRoot.findViewById(R.id.search_view)         //т.к. добавляем не ViewGroup, а layout, то наполняем View'хами по отдельности
+        mainRecycler = scene.sceneRoot.findViewById(R.id.main_recycler)
+
         //находим наш RV
-        binding.mainRecycler.apply {
+        mainRecycler.apply {
             //Инициализируем наш адаптер в конструктор передаем анонимно инициализированный интерфейс,
             filmsAdapter =
                 FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
@@ -114,13 +158,13 @@ class HomeFragment : Fragment() {
 
 
         //чтобы нажимать на всю площадь вью поиска
-        binding.searchView.setOnClickListener {
-            binding.searchView.isIconified = false
+        searchView.setOnClickListener {
+            searchView.isIconified = false
         }
 
 
         //Подключаем слушателя изменений введенного текста в поиска
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             //Этот метод отрабатывает при нажатии кнопки "поиск" на софт клавиатуре
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -146,5 +190,6 @@ class HomeFragment : Fragment() {
                 return true
             }
         })
+
     }
 }
