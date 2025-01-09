@@ -6,7 +6,7 @@
     android:id="@+id/later_root"
     android:visibility="visible"
     android:background="@drawable/menu_buttons"
-    tools:context=".fragments.LaterWatchFragment">
+    tools:context=".LaterWatchFragment">
 
     <TextView
         android:layout_width="match_parent"

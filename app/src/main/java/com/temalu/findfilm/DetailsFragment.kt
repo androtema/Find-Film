@@ -1,4 +1,4 @@
-package com.temalu.findfilm.fragments
+package com.temalu.findfilm
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,9 +10,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
 import com.google.android.material.snackbar.Snackbar
-import com.temalu.findfilm.Film
-import com.temalu.findfilm.MainActivity
-import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
 
 class DetailsFragment : Fragment() {

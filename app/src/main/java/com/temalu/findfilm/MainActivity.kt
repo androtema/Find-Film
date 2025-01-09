@@ -1,18 +1,11 @@
 package com.temalu.findfilm
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.temalu.findfilm.databinding.ActivityMainBinding
-import com.temalu.findfilm.fragments.DetailsFragment
-import com.temalu.findfilm.fragments.DifferentFilmsFragment
-import com.temalu.findfilm.fragments.FavoritesFragment
-import com.temalu.findfilm.fragments.HomeFragment
-import com.temalu.findfilm.fragments.LaterWatchFragment
-import com.temalu.findfilm.fragments.SplashScreen2
 
 class MainActivity : AppCompatActivity() {
 
