@@ -2,6 +2,7 @@ package com.temalu.findfilm
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -36,6 +37,8 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
                 holder.itemView.setOnClickListener {
                     clickListener.click(items[position])
                 }
+                //добавление анимации появления рейтинга
+                holder.filmItem.ratingDonut.startAnimation(AnimationUtils.loadAnimation(holder.filmItem.ratingDonut.context,R.anim.for_visible_raiting_film_item))
             }
         }
     }
