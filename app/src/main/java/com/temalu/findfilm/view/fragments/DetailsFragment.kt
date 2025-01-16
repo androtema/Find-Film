@@ -1,4 +1,4 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
 import com.google.android.material.snackbar.Snackbar
+import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
+import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.view.MainActivity
 
 class DetailsFragment : Fragment() {
 
@@ -46,8 +49,6 @@ class DetailsFragment : Fragment() {
                 film.isInFavorites = false
                 MainActivity.favoritesList.remove(film)
             }
-            Log.d("AAAAAAAAAAAAAAA", "" + film.isInFavorites)
-            Log.d("AAAAAAAAAAAAAAA", "" + MainActivity.favoritesList.size)
         }
 
         //задаём действие кнопки ПОДЕЛИТЬСЯ

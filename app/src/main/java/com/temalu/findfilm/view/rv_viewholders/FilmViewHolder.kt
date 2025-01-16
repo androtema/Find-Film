@@ -1,12 +1,9 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.view.rv_viewholders
 
-import android.view.View
-import androidx.appcompat.view.menu.MenuView.ItemView
-import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.databinding.FilmItemBinding
+import com.temalu.findfilm.domain.Film
 
 class FilmViewHolder(val filmItem: FilmItemBinding) : RecyclerView.ViewHolder(filmItem.root) {
     private val title = filmItem.title

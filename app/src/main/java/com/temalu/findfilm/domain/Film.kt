@@ -1,5 +1,5 @@
 
-package com.temalu.findfilm
+package com.temalu.findfilm.domain
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
