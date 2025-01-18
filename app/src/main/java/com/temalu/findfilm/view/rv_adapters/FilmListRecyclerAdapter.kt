@@ -1,4 +1,4 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.view.rv_adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,10 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.temalu.findfilm.view.rv_viewholders.FilmViewHolder
+import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FilmItemBinding
+import com.temalu.findfilm.domain.Film
 
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -38,13 +41,15 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
                     clickListener.click(items[position])
                 }
                 //добавление анимации появления рейтинга
-                holder.filmItem.ratingDonut.startAnimation(AnimationUtils.loadAnimation(holder.filmItem.ratingDonut.context,R.anim.for_visible_raiting_film_item))
+                holder.filmItem.ratingDonut.startAnimation(AnimationUtils.loadAnimation(holder.filmItem.ratingDonut.context,
+                    R.anim.for_visible_raiting_film_item
+                ))
             }
         }
     }
 
     fun addItems(list: List<Film>) {
-        val diff = FilmDiff(items , list)           //сравниваем список который был в FilmListRecyclerAdapter с тем что пришёл из ???базы???
+        val diff = DiffUtilFilms(items , list)           //сравниваем список который был в FilmListRecyclerAdapter с тем что пришёл из ???базы???
         val diffResult = DiffUtil.calculateDiff(diff)
         items = list                                //обновляем "наш" список
         diffResult.dispatchUpdatesTo(this@FilmListRecyclerAdapter)

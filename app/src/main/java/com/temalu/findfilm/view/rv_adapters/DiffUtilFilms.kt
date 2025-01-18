@@ -1,8 +1,9 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.view.rv_adapters
 
 import androidx.recyclerview.widget.DiffUtil
+import com.temalu.findfilm.domain.Film
 
-class FilmDiff(private val oldList: List<Film>, private val newList: List<Film>) :
+class DiffUtilFilms(private val oldList: List<Film>, private val newList: List<Film>) :
     DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
@@ -22,5 +23,4 @@ class FilmDiff(private val oldList: List<Film>, private val newList: List<Film>)
         return old.description == new.description &&
                 old.poster == new.poster
     }
-
 }

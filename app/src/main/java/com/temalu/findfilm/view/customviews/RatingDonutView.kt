@@ -1,6 +1,5 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.view.customviews
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -9,6 +8,7 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
+import com.temalu.findfilm.R
 
 
 class RatingDonutView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null) : View(context, attributeSet) {
@@ -42,7 +42,6 @@ class RatingDonutView @JvmOverloads constructor(context: Context, attributeSet: 
         }
         //Инициализируем первоначальные краски
         initPaint()
-
     }
 
     private fun initPaint() {

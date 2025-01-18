@@ -1,11 +1,18 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.view
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.temalu.findfilm.view.fragments.DetailsFragment
+import com.temalu.findfilm.view.fragments.DifferentFilmsFragment
+import com.temalu.findfilm.view.fragments.FavoritesFragment
+import com.temalu.findfilm.view.fragments.HomeFragment
+import com.temalu.findfilm.view.fragments.LaterWatchFragment
+import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
+import com.temalu.findfilm.domain.Film
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,22 +29,9 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        /*val intent = Intent(
-            this,
-            SplashScreen2::class.java
-        )
-        startActivity(intent)*/
-
-
-        //создаём объект класса activity_main
         binding = ActivityMainBinding.inflate(layoutInflater)
-
-        //смотрим корневой элемент в activity_main
         setContentView(binding.root)
-
-        //настройка кнопок меню навигации
         setBottomToast()
-
         //запускаем стартовый фрагмент
         changeFragment(HomeFragment(), TAG_HOME_FRAGMENT)
     }
@@ -64,37 +58,32 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.favorites -> {
-                    val tag = TAG_FAVORITE_FRAGMENT
-                    val fragment = checkFragmentExistence(tag)
-                    changeFragment(fragment ?: FavoritesFragment(), tag)
+                    val fragment = checkFragmentExistence(TAG_FAVORITE_FRAGMENT)
+                    changeFragment(fragment ?: FavoritesFragment(), TAG_FAVORITE_FRAGMENT)
                     Toast.makeText(this, "Избранное", Toast.LENGTH_SHORT).show()
                     true
                 }
 
                 R.id.watch_later -> {
-                    val tag = TAG_LATER_FRAGMENT
-                    val fragment = checkFragmentExistence(tag)
-                    changeFragment(fragment ?: DifferentFilmsFragment(), tag)
+                    val fragment = checkFragmentExistence(TAG_LATER_FRAGMENT)
+                    changeFragment(fragment ?: DifferentFilmsFragment(), TAG_LATER_FRAGMENT)
                     Toast.makeText(this, "Посмотреть похже", Toast.LENGTH_SHORT).show()
                     true
                 }
 
                 R.id.selections -> {
-                    val tag = TAG_SLECTIONS_FRAGMENT
-                    val fragment = checkFragmentExistence(tag)
-                    changeFragment(fragment ?: LaterWatchFragment(), tag)
+                    val fragment = checkFragmentExistence(TAG_SLECTIONS_FRAGMENT)
+                    changeFragment(fragment ?: LaterWatchFragment(), TAG_SLECTIONS_FRAGMENT)
                     Toast.makeText(this, "Подборки", Toast.LENGTH_SHORT).show()
                     true
                 }
 
                 R.id.home -> {
-                    val tag = TAG_HOME_FRAGMENT
-                    val fragment = checkFragmentExistence(tag)
-                    changeFragment(fragment ?: HomeFragment(), tag)
+                    val fragment = checkFragmentExistence(TAG_HOME_FRAGMENT)
+                    changeFragment(fragment ?: HomeFragment(), TAG_HOME_FRAGMENT)
                     Toast.makeText(this, "Главное меню", Toast.LENGTH_SHORT).show()
                     true
                 }
-
                 else -> false
             }
         }
@@ -121,7 +110,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Чтобы выйти нажмите ещё раз", Toast.LENGTH_SHORT).show()
             }
-            backPressedTime = System.currentTimeMillis()
         } else {
             super.onBackPressedDispatcher.onBackPressed()
         }

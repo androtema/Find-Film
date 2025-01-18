@@ -1,4 +1,4 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.temalu.findfilm.databinding.FragmentDifferentFilmsBinding
+import com.temalu.findfilm.utils.AnimationHelper
 
 
 class DifferentFilmsFragment : Fragment() {

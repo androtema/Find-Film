@@ -1,4 +1,4 @@
-package com.temalu.findfilm
+package com.temalu.findfilm.view.fragments
 
 import android.os.Bundle
 import androidx.transition.TransitionManager
@@ -8,12 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
 import androidx.transition.Slide
 import androidx.transition.TransitionSet
+import com.temalu.findfilm.view.rv_adapters.FilmListRecyclerAdapter
+import com.temalu.findfilm.R
+import com.temalu.findfilm.view.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.databinding.FragmentHomeBinding
+import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.utils.AnimationHelper
+import com.temalu.findfilm.view.MainActivity
+import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
 import java.util.Locale
 
 
@@ -24,82 +33,21 @@ class HomeFragment : Fragment() {
     private lateinit var mainRecycler: RecyclerView
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
-    val filmsDataBase: MutableList<Film> = mutableListOf(
-        Film(
-            "Матрица",
-            R.drawable.matrix,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker.",
-            4.5f
-        ),
-        Film(
-            "Рокки",
-            R.drawable.rocky,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker.",
-            7.5f
-        ),
-        Film(
-            "Индиана Джонс",
-            R.drawable.raiders,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            9.5f
-        ),
-        Film(
-            "Матрица2",
-            R.drawable.matrix,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            0.5f),
-        Film(
-            "Ла Ла Лэнд",
-            R.drawable.lalaland,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            5.5f),
-        Film(
-            "Мононоке",
-            R.drawable.mononoke,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            3.5f),
-        Film(
-            "Бэтмен",
-            R.drawable.darknight,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            8.5f),
-        Film(
-            "Один дома",
-            R.drawable.home_alone,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            3.5f),
-        Film(
-            "Матрица3",
-            R.drawable.matrix,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            7.5f),
-        Film(
-            "Интерстеллар",
-            R.drawable.interstellar,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            6.5f),
-        Film(
-            "Властелин колец",
-            R.drawable.lord_rings,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            2.5f),
-        Film(
-            "Матрица4",
-            R.drawable.matrix,
-            "In Gotham City, mentally troubled comedian Arthur Fleck is disregarded and mistreated by society. He then embarks on a downward spiral of revolution and bloody crime. This path brings him face-to-face with his alter-ego: the Joker."
-            ,
-            1.5f),
-    )
-    var firstStart = true
+    private val viewModel by lazy {
+        ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
+    }
+
+    private var filmsDataBase = listOf<Film>()
+        set(value) {
+            //Если придет такое же значение, то мы выходим из метода
+            if (field == value) return
+            //Если пришло другое значение, то кладем его в переменную
+            field = value
+            //Обновляем RV адаптер
+            filmsAdapter.addItems(field)
+        }
+
+    var firstStart = true   //для определения первого запуска приложения
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,6 +59,10 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
+            filmsDataBase = it
+        })
 
         AnimationHelper.performFragmentCircularRevealAnimation(
             bindingHomeFragment.homeFragmentRoot,
