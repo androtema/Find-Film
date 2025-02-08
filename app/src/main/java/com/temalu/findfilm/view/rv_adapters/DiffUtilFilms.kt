@@ -14,13 +14,10 @@ class DiffUtilFilms(private val oldList: List<Film>, private val newList: List<F
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].title == newList[newItemPosition].title
+        return oldList[oldItemPosition].poster == newList[newItemPosition].poster
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val old: Film = oldList[oldItemPosition]
-        val new: Film = newList[newItemPosition]
-        return old.description == new.description &&
-                old.poster == new.poster
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 }

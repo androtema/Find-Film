@@ -1,5 +1,6 @@
 package com.temalu.findfilm.view.rv_adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -10,9 +11,11 @@ import com.temalu.findfilm.view.rv_viewholders.FilmViewHolder
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FilmItemBinding
 import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.view.fragments.HomeFragment
+import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
 
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<ViewHolder>() {
 
     private var items = listOf<Film>()
 
@@ -28,7 +31,7 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
 
     override fun getItemCount() = items.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder) {
             is FilmViewHolder -> {
                 //Вызываем метод bind(), который мы создали, и передаем туда объект
@@ -41,17 +44,24 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
                     clickListener.click(items[position])
                 }
                 //добавление анимации появления рейтинга
-                holder.filmItem.ratingDonut.startAnimation(AnimationUtils.loadAnimation(holder.filmItem.ratingDonut.context,
-                    R.anim.for_visible_raiting_film_item
-                ))
+                holder.filmItem.ratingDonut.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        holder.filmItem.ratingDonut.context,
+                        R.anim.for_visible_raiting_film_item
+                    )
+                )
             }
         }
     }
 
     fun addItems(list: List<Film>) {
-        val diff = DiffUtilFilms(items , list)           //сравниваем список который был в FilmListRecyclerAdapter с тем что пришёл из ???базы???
+        val newList = items + list
+        val diff = DiffUtilFilms(
+            items,
+            newList
+        )           //сравниваем список который был в FilmListRecyclerAdapter с тем что пришёл из базы
         val diffResult = DiffUtil.calculateDiff(diff)
-        items = list                                //обновляем "наш" список
+        items = newList                               //обновляем наш список
         diffResult.dispatchUpdatesTo(this@FilmListRecyclerAdapter)
     }
 

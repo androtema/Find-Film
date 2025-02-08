@@ -2,6 +2,8 @@ package com.temalu.findfilm.view.rv_viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.temalu.findfilm.data.API_KEY
+import com.temalu.findfilm.data.API_TMDB
 import com.temalu.findfilm.databinding.FilmItemBinding
 import com.temalu.findfilm.domain.Film
 
@@ -15,7 +17,7 @@ class FilmViewHolder(val filmItem: FilmItemBinding) : RecyclerView.ViewHolder(fi
         title.text = film.title
 
         Glide.with(itemView)
-            .load(film.poster)      //загружаем картинку из film в poster(вьюхолдера)
+            .load(API_TMDB.IMAGES_URL + "w200" + film.poster)
             .centerCrop()
             .into(poster)
 

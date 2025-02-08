@@ -1,7 +1,8 @@
 package com.temalu.findfilm.view.fragments
 
 import android.os.Bundle
-import androidx.transition.TransitionManager
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -14,14 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
 import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
-import com.temalu.findfilm.view.rv_adapters.FilmListRecyclerAdapter
 import com.temalu.findfilm.R
-import com.temalu.findfilm.view.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.databinding.FragmentHomeBinding
 import com.temalu.findfilm.domain.Film
 import com.temalu.findfilm.utils.AnimationHelper
 import com.temalu.findfilm.view.MainActivity
+import com.temalu.findfilm.view.rv_adapters.FilmListRecyclerAdapter
+import com.temalu.findfilm.view.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
 import java.util.Locale
 
@@ -33,11 +35,15 @@ class HomeFragment : Fragment() {
     private lateinit var mainRecycler: RecyclerView
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
+    private val TOTAL_PAGES = 500
+    private var currentPage = 1
+
     private val viewModel by lazy {
         ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
     }
 
-    private var filmsDataBase = listOf<Film>()
+
+    var filmsDataBase = listOf<Film>()
         set(value) {
             //Если придет такое же значение, то мы выходим из метода
             if (field == value) return
@@ -60,6 +66,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.loadPage(currentPage)
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
             filmsDataBase = it
         })
@@ -71,7 +78,7 @@ class HomeFragment : Fragment() {
         )
 
         //добавление анимации появления home fragment
-        //fragment_home - пустой экран (Scene 0) -> merge_home... (Scene 1) - содержимое экрана появляется
+        //fragment_home - пустой экран, виден только Main Activity (Scene 0) -> merge_home... (Scene 1) - содержимое экрана появляется
         val scene = Scene.getSceneForLayout(
             bindingHomeFragment.homeFragmentRoot,
             R.layout.merge_home_screen_content,
@@ -92,10 +99,8 @@ class HomeFragment : Fragment() {
             TransitionManager.go(scene)
         }
 
-        searchView =
-            scene.sceneRoot.findViewById(R.id.search_view)         //т.к. добавляем не ViewGroup, а layout, то наполняем View'хами по отдельности
-        mainRecycler = scene.sceneRoot.findViewById(R.id.main_recycler)
 
+        mainRecycler = scene.sceneRoot.findViewById(R.id.main_recycler)
         //находим наш RV
         mainRecycler.apply {
             //Инициализируем наш адаптер в конструктор передаем анонимно инициализированный интерфейс,
@@ -116,12 +121,50 @@ class HomeFragment : Fragment() {
         //Кладем нашу БД в RV
         filmsAdapter.addItems(filmsDataBase)
 
+        RecyclerViewSetScroollListener()
+        initSearchView(scene)
+    }
+
+    // слушатель скролла для реализации подгрузки контента
+    fun RecyclerViewSetScroollListener() {
+        var isLoading = false //проверка не загружаем ли мы данные
+        val scrollListener = object : RecyclerView.OnScrollListener() {
+            @Override
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val layoutManager = recyclerView.layoutManager as RecyclerView.LayoutManager
+                //смотрим сколько элементов на экране
+                val visibleItemCount: Int = layoutManager.childCount
+                //сколько всего элементов
+                val totalItemCount: Int = layoutManager.itemCount
+                //какая позиция первого элемента
+                val firstVisibleItems = (recyclerView.layoutManager as LinearLayoutManager)
+                    .findFirstVisibleItemPosition()
+                //проверяем, грузим мы что-то или нет
+                // определяем начало загрузки следующей страницы
+                if (!isLoading && (visibleItemCount + firstVisibleItems >= totalItemCount - 7)) {
+                    //ставим флаг, что мы запросили ещё элементы
+                    isLoading = true
+                    currentPage++
+                    if (currentPage <= TOTAL_PAGES) {
+                        // загрузка следующей страницы
+                        downloadNextPage(currentPage)
+                        // Оповещение RecyclerView об изменении данных с помощью DiffUtil
+                        isLoading = false
+                    }
+                }
+            }
+        }
+        mainRecycler.addOnScrollListener(scrollListener)
+    }
+
+    private fun initSearchView(scene: Scene) {
+        //т.к. добавляем не ViewGroup, а layout, то наполняем View'хами по отдельности
+        searchView = scene.sceneRoot.findViewById(R.id.search_view)
 
         //чтобы нажимать на всю площадь вью поиска
         searchView.setOnClickListener {
             searchView.isIconified = false
         }
-
 
         //Подключаем слушателя изменений введенного текста в поиска
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -150,6 +193,9 @@ class HomeFragment : Fragment() {
                 return true
             }
         })
+    }
 
+    private fun downloadNextPage(page: Int) {
+        viewModel.loadPage(page) // Предполагается, что метод loadPage в ViewModel загружает данные
     }
 }
