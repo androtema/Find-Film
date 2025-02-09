@@ -9,8 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.temalu.findfilm.R
+import com.temalu.findfilm.data.API_KEY
+import com.temalu.findfilm.data.API_TMDB
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
 import com.temalu.findfilm.domain.Film
 import com.temalu.findfilm.view.MainActivity
@@ -76,7 +79,10 @@ class DetailsFragment : Fragment() {
         //Устанавливаем заголовок
         detailsBinding.detailsToolbar.title = film.title
         //Устанавливаем картинку
-        detailsBinding.detailsPoster.setImageResource(film.poster)
+        Glide.with(this)
+            .load(API_TMDB.IMAGES_URL + "w500" + film.poster)
+            .centerCrop()
+            .into(detailsBinding.detailsPoster)
         //Устанавливаем описание
         detailsBinding.detailsDescription.text = film.description
 

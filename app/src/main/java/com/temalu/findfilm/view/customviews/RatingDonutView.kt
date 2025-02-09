@@ -75,9 +75,9 @@ class RatingDonutView @JvmOverloads constructor(context: Context, attributeSet: 
     private fun getPaintColor(progress: Int): Int = when(progress) {
         in 0 .. 20 -> Color.parseColor("#e84258")
         in 21 .. 40 -> Color.parseColor("#fd8060")
-        in 41 .. 60 -> Color.parseColor("#fee191")
-        in 61 .. 80 -> Color.parseColor("#00FA9A")
-        else -> Color.parseColor("#fffafa")
+        in 41 .. 60 -> Color.parseColor("#fffafa")
+        in 61 .. 80 -> Color.parseColor("#fee191")
+        else -> Color.parseColor("#00FA9A")
     }
 
 

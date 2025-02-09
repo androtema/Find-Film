@@ -114,8 +114,7 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressedDispatcher.onBackPressed()
         }
     }
-
-
+    
     companion object {
         const val TIME_INTERVAL = 2000  //интервал времени для нажатия на back второй раз
         val favoritesList: MutableList<Film> = emptyList<Film>().toMutableList()
