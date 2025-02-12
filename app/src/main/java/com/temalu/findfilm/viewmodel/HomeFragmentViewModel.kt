@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import com.temalu.findfilm.App
 import com.temalu.findfilm.domain.Film
 import com.temalu.findfilm.domain.Interactor
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 
-class HomeFragmentViewModel : ViewModel() {
+class HomeFragmentViewModel : ViewModel(), KoinComponent {
     val filmsListLiveData:  MutableLiveData<List<Film>> = MutableLiveData()
-    private var interactor: Interactor = App.instance.interactor
+    private val interactor: Interactor by inject()
 
     fun loadPage(page : Int){
         interactor.getFilmsFromApi(page, object : ApiCallback {
