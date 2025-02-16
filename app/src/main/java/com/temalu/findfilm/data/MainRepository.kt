@@ -1,4 +1,6 @@
 package com.temalu.findfilm.data
 
-class MainRepository {
+import jakarta.inject.Inject
+
+class MainRepository @Inject constructor() : Repository {
 }
