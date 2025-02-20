@@ -1,12 +1,17 @@
 package com.temalu.findfilm
 
 import android.app.Application
+import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
 import com.temalu.findfilm.data.API_KEY
 import com.temalu.findfilm.data.API_TMDB
 import com.temalu.findfilm.data.MainRepository
 import com.temalu.findfilm.data.TmdbApi
 import com.temalu.findfilm.di.AppComponent
 import com.temalu.findfilm.di.DaggerAppComponent
+import com.temalu.findfilm.di.modules.DatabaseModule
+import com.temalu.findfilm.di.modules.DomainModule
+import com.temalu.findfilm.di.modules.InteractorModule
+import com.temalu.findfilm.di.modules.RemoteModule
 import com.temalu.findfilm.domain.Interactor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,7 +26,11 @@ class App : Application() {
         super.onCreate()
         instance = this
         //Создаем компонент
-        dagger = DaggerAppComponent.create()
+        dagger = DaggerAppComponent.builder()
+            .remoteModule(RemoteModule())
+            .interactorModule(InteractorModule())
+            .domainModule(DomainModule(this))
+            .build()
     }
 
     companion object {
