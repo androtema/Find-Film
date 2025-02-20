@@ -69,6 +69,6 @@ dependencies {
     implementation (libs.converter.gson)
     implementation (libs.logging.interceptor)
 
-    //Koin
-    implementation (libs.koin.android)
+    implementation (libs.dagger)
+    kapt (libs.dagger.compiler)
 }

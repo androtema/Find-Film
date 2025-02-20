@@ -2,6 +2,7 @@ package com.temalu.findfilm.domain
 
 import com.temalu.findfilm.data.API_KEY
 import com.temalu.findfilm.data.MainRepository
+import com.temalu.findfilm.data.Repository
 import com.temalu.findfilm.data.TmdbApi
 import com.temalu.findfilm.data.TmdbFilm
 import com.temalu.findfilm.data.TmdbResultsDto
@@ -11,7 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class Interactor(private val repo: MainRepository, private val retrofitService: TmdbApi) {
+class Interactor(private val repo: Repository, private val retrofitService: TmdbApi) {
     //В конструктор мы будем передавать коллбэк из вью модели, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, которую нужно загрузить (это для пагинации)
     fun getFilmsFromApi(page: Int, callback: HomeFragmentViewModel.ApiCallback) {

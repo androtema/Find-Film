@@ -6,15 +6,21 @@ import androidx.lifecycle.ViewModel
 import com.temalu.findfilm.App
 import com.temalu.findfilm.domain.Film
 import com.temalu.findfilm.domain.Interactor
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import jakarta.inject.Inject
 
 
-class HomeFragmentViewModel : ViewModel(), KoinComponent {
-    val filmsListLiveData:  MutableLiveData<List<Film>> = MutableLiveData()
-    private val interactor: Interactor by inject()
+class HomeFragmentViewModel : ViewModel() {
+    val filmsListLiveData: MutableLiveData<List<Film>> = MutableLiveData()
 
-    fun loadPage(page : Int){
+    //Инициализируем интерактор
+    @Inject
+    lateinit var interactor: Interactor
+
+    init {
+        App.instance.dagger.inject(this)
+    }
+
+    fun loadPage(page: Int) {
         interactor.getFilmsFromApi(page, object : ApiCallback {
             override fun onSuccess(films: List<Film>) {
                 filmsListLiveData.postValue(films)
