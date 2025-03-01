@@ -1,8 +1,7 @@
 package com.temalu.findfilm.view.fragments
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,7 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FragmentHomeBinding
+import com.temalu.findfilm.databinding.MergeHomeScreenContentBinding
 import com.temalu.findfilm.domain.Film
 import com.temalu.findfilm.utils.AnimationHelper
 import com.temalu.findfilm.view.MainActivity
@@ -30,10 +30,12 @@ import java.util.Locale
 
 class HomeFragment : Fragment() {
 
-    private lateinit var bindingHomeFragment: FragmentHomeBinding
     private lateinit var searchView: SearchView
     private lateinit var mainRecycler: RecyclerView
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
+
+    private val bindingHomeFragment: FragmentHomeBinding get() = _bindingHomeFragment!!
+    private var _bindingHomeFragment: FragmentHomeBinding? = null
 
     private val TOTAL_PAGES = 500
     private var currentPage = 1
@@ -59,29 +61,57 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        bindingHomeFragment = FragmentHomeBinding.inflate(layoutInflater)
+        _bindingHomeFragment = FragmentHomeBinding.inflate(layoutInflater)
         return bindingHomeFragment.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val scene = addScene()
         viewModel.loadPage(currentPage)
+
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
             filmsDataBase = it
             filmsAdapter.addItems(it)
         })
 
-        AnimationHelper.performFragmentCircularRevealAnimation(
-            bindingHomeFragment.homeFragmentRoot,
-            requireActivity(),
-            1
-        )
+        addAnimation(scene)
+        addRecyclerAndDecorator(scene)
+        recyclerViewSetScroollListener()
+        initSearchView(scene)
+    }
 
+    private fun addScene(): Scene {
         val scene = Scene.getSceneForLayout(
             bindingHomeFragment.homeFragmentRoot,
             R.layout.merge_home_screen_content,
             requireContext()
+        )
+        return scene
+    }
+
+    private fun addRecyclerAndDecorator(scene: Scene) {
+        mainRecycler = scene.sceneRoot.findViewById(R.id.main_recycler)
+        mainRecycler.apply {
+            //Инициализируем наш адаптер в конструктор передаем анонимно инициализированный интерфейс,
+            filmsAdapter =
+                FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
+                    override fun click(film: Film) {
+                        (requireActivity() as MainActivity).launchDetailsFragment(film)
+                    }
+                })
+            adapter = filmsAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            val decorator = TopSpacingItemDecoration(5)
+            addItemDecoration(decorator)
+        }
+    }
+
+    private fun addAnimation(scene: Scene) {
+        AnimationHelper.performFragmentCircularRevealAnimation(
+            bindingHomeFragment.homeFragmentRoot,
+            requireActivity(),
+            1
         )
 
         if (firstStart) {
@@ -97,31 +127,10 @@ class HomeFragment : Fragment() {
         } else {
             TransitionManager.go(scene)
         }
-
-        mainRecycler = scene.sceneRoot.findViewById(R.id.main_recycler)
-        mainRecycler.apply {
-            //Инициализируем наш адаптер в конструктор передаем анонимно инициализированный интерфейс,
-            filmsAdapter =
-                FilmListRecyclerAdapter(object : FilmListRecyclerAdapter.OnItemClickListener {
-                    override fun click(film: Film) {
-                        (requireActivity() as MainActivity).launchDetailsFragment(film)
-                    }
-                })
-            //Присваиваем адаптер
-            adapter = filmsAdapter
-            //Присвои layoutmanager
-            layoutManager = LinearLayoutManager(requireContext())
-            //Применяем декоратор для отступов
-            val decorator = TopSpacingItemDecoration(5)
-            addItemDecoration(decorator)
-        }
-        RecyclerViewSetScroollListener()
-        initSearchView(scene)
     }
 
     // слушатель скролла для реализации подгрузки контента
-    fun RecyclerViewSetScroollListener() {
-        var isLoading = false //проверка не загружаем ли мы данные
+    private fun recyclerViewSetScroollListener() {
         val scrollListener = object : RecyclerView.OnScrollListener() {
             @Override
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -135,15 +144,11 @@ class HomeFragment : Fragment() {
                     .findFirstVisibleItemPosition()
                 //проверяем, грузим мы что-то или нет
                 // определяем начало загрузки следующей страницы
-                if (!isLoading && (visibleItemCount + firstVisibleItems >= totalItemCount - 7)) {
+                if (visibleItemCount + firstVisibleItems >= totalItemCount - 15) {
                     //ставим флаг, что мы запросили ещё элементы
-                    isLoading = true
                     currentPage++
                     if (currentPage <= TOTAL_PAGES) {
-                        // загрузка следующей страницы
                         downloadNextPage(currentPage)
-                        // Оповещение RecyclerView об изменении данных с помощью DiffUtil
-                        isLoading = false
                     }
                 }
             }
@@ -154,7 +159,6 @@ class HomeFragment : Fragment() {
     private fun initSearchView(scene: Scene) {
         //т.к. добавляем не ViewGroup, а layout, то наполняем View'хами по отдельности
         searchView = scene.sceneRoot.findViewById(R.id.search_view)
-
         //чтобы нажимать на всю площадь вью поиска
         searchView.setOnClickListener {
             searchView.isIconified = false
@@ -169,18 +173,16 @@ class HomeFragment : Fragment() {
 
             //Этот метод отрабатывает на каждое изменения текста
             override fun onQueryTextChange(newText: String?): Boolean {
-                //Если ввод пуст то вставляем в адаптер всю БД
-                if (newText != null) {
-                    if (newText.isEmpty()) {
-                        filmsAdapter.addItems(filmsDataBase)
-                        return true
-                    }
+                if (newText!!.isEmpty()) {
+                    filmsAdapter.addItems(filmsDataBase)
+                    return true
                 }
+
                 //Фильтруем список на поискк подходящих сочетаний
                 val result = filmsDataBase.filter {
                     //Чтобы все работало правильно, нужно и запрос, и имя фильма приводить к нижнему регистру
                     it.title.lowercase(Locale.getDefault())
-                        .contains(newText!!.lowercase(Locale.getDefault()))
+                        .contains(newText.lowercase(Locale.getDefault()))
                 }
                 //Добавляем в адаптер
                 filmsAdapter.addItems(result)
@@ -190,6 +192,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun downloadNextPage(page: Int) {
-        viewModel.loadPage(page) // Предполагается, что метод loadPage в ViewModel загружает данные
+        viewModel.loadPage(page)
     }
 }

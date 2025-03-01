@@ -1,6 +1,7 @@
 package com.temalu.findfilm.view
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -112,10 +113,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount == 1) {
-            if (backPressedTime + TIME_INTERVAL > System.currentTimeMillis()) {
+            if (TIME_INTERVAL > System.currentTimeMillis() - backPressedTime) {
                 super.onBackPressedDispatcher.onBackPressed()
                 finish()
             } else {
+                backPressedTime = System.currentTimeMillis()
                 Toast.makeText(this, "Чтобы выйти нажмите ещё раз", Toast.LENGTH_SHORT).show()
             }
         } else {

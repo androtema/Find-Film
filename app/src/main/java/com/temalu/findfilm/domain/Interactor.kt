@@ -1,12 +1,10 @@
 package com.temalu.findfilm.domain
 
-import com.temalu.findfilm.data.API_KEY
-import com.temalu.findfilm.data.MainRepository
+import com.temalu.findfilm.data.Tmdb.API_KEY
 import com.temalu.findfilm.data.PreferenceProvider
 import com.temalu.findfilm.data.Repository
-import com.temalu.findfilm.data.TmdbApi
-import com.temalu.findfilm.data.TmdbFilm
-import com.temalu.findfilm.data.TmdbResultsDto
+import com.temalu.findfilm.data.Tmdb.TmdbApi
+import com.temalu.findfilm.data.Tmdb.TmdbResultsDto
 import com.temalu.findfilm.utils.Converter
 import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
 import retrofit2.Call

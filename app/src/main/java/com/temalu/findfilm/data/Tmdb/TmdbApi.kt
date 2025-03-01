@@ -1,4 +1,4 @@
-package com.temalu.findfilm.data
+package com.temalu.findfilm.data.Tmdb
 
 import retrofit2.Call
 import retrofit2.http.GET

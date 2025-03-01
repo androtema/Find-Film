@@ -1,6 +1,6 @@
 package com.temalu.findfilm.utils
 
-import com.temalu.findfilm.data.TmdbFilm
+import com.temalu.findfilm.data.Tmdb.TmdbFilm
 import com.temalu.findfilm.domain.Film
 
 object Converter {
