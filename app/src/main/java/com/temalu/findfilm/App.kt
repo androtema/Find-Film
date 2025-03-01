@@ -10,7 +10,6 @@ import com.temalu.findfilm.di.AppComponent
 import com.temalu.findfilm.di.DaggerAppComponent
 import com.temalu.findfilm.di.modules.DatabaseModule
 import com.temalu.findfilm.di.modules.DomainModule
-import com.temalu.findfilm.di.modules.InteractorModule
 import com.temalu.findfilm.di.modules.RemoteModule
 import com.temalu.findfilm.domain.Interactor
 import okhttp3.OkHttpClient
@@ -28,7 +27,7 @@ class App : Application() {
         //Создаем компонент
         dagger = DaggerAppComponent.builder()
             .remoteModule(RemoteModule())
-            .interactorModule(InteractorModule())
+            .databaseModule(DatabaseModule())
             .domainModule(DomainModule(this))
             .build()
     }

@@ -30,4 +30,11 @@ class DomainModule(val context: Context) {
     //Создаем экземпляр SharedPreferences
     fun providePreferences(context: Context) = PreferenceProvider(context)
 
+    @Singleton
+    @Provides
+    fun provideInteractor(
+        repository: MainRepository,
+        tmdbApi: TmdbApi,
+        preferenceProvider: PreferenceProvider
+    ) = Interactor(repo = repository, retrofitService = tmdbApi, preferences = preferenceProvider)
 }

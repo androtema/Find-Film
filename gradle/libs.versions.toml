@@ -19,6 +19,7 @@ materialVersion = "<1.12.0>"
 navigationFragmentKtx = "2.8.4"
 retrofit = "2.11.0"
 viewpager2 = "1.1.0"
+swiperefreshlayout = "1.1.0"
 
 [libraries]
 androidx-coordinatorlayout = { module = "androidx.coordinatorlayout:coordinatorlayout", version.ref = "coordinatorlayout" }
@@ -41,6 +42,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 material-v1120 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

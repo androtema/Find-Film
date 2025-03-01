@@ -13,6 +13,7 @@ import com.temalu.findfilm.view.fragments.LaterWatchFragment
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.view.fragments.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private val TAG_FAVORITE_FRAGMENT = "favorites"
     private val TAG_SLECTIONS_FRAGMENT = "selections"
     private val TAG_LATER_FRAGMENT = "watch_later"
+    private val TAG_SETTINGS_FRAGMENT = "settings"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //"разрешение" использовать экран целиком (включая up/down menu navigation)
@@ -82,6 +84,12 @@ class MainActivity : AppCompatActivity() {
                     val fragment = checkFragmentExistence(TAG_HOME_FRAGMENT)
                     changeFragment(fragment ?: HomeFragment(), TAG_HOME_FRAGMENT)
                     Toast.makeText(this, "Главное меню", Toast.LENGTH_SHORT).show()
+                    true
+                }
+
+                R.id.settings -> {
+                    val fragment = checkFragmentExistence(TAG_SETTINGS_FRAGMENT)
+                    changeFragment( fragment?: SettingsFragment(), TAG_SETTINGS_FRAGMENT)
                     true
                 }
                 else -> false

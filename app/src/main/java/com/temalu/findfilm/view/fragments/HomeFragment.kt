@@ -69,6 +69,7 @@ class HomeFragment : Fragment() {
         viewModel.loadPage(currentPage)
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
             filmsDataBase = it
+            filmsAdapter.addItems(it)
         })
 
         AnimationHelper.performFragmentCircularRevealAnimation(
@@ -77,8 +78,6 @@ class HomeFragment : Fragment() {
             1
         )
 
-        //добавление анимации появления home fragment
-        //fragment_home - пустой экран, виден только Main Activity (Scene 0) -> merge_home... (Scene 1) - содержимое экрана появляется
         val scene = Scene.getSceneForLayout(
             bindingHomeFragment.homeFragmentRoot,
             R.layout.merge_home_screen_content,
@@ -99,9 +98,7 @@ class HomeFragment : Fragment() {
             TransitionManager.go(scene)
         }
 
-
         mainRecycler = scene.sceneRoot.findViewById(R.id.main_recycler)
-        //находим наш RV
         mainRecycler.apply {
             //Инициализируем наш адаптер в конструктор передаем анонимно инициализированный интерфейс,
             filmsAdapter =
@@ -118,9 +115,6 @@ class HomeFragment : Fragment() {
             val decorator = TopSpacingItemDecoration(5)
             addItemDecoration(decorator)
         }
-        //Кладем нашу БД в RV
-        filmsAdapter.addItems(filmsDataBase)
-
         RecyclerViewSetScroollListener()
         initSearchView(scene)
     }

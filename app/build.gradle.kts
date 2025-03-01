@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation (libs.material.v1120)
     implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.swiperefreshlayout)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

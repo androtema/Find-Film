@@ -23,7 +23,7 @@
         app:showAsAction="withText"/>
     <item
         android:id="@+id/settings"
-        android:icon="@drawable/baseline_settings_24"
+        android:icon="@drawable/round_settings_24"
         android:title="@string/settings_string"
         app:showAsAction="withText"/>
 </menu>

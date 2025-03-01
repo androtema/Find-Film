@@ -8,8 +8,8 @@ import dagger.Provides
 import jakarta.inject.Singleton
 
 @Module
-abstract class DatabaseModule {
-    @Binds
+class DatabaseModule {
+    @Provides
     @Singleton
-    abstract fun provideRepository(mainRepository: MainRepository) : Repository
+    fun provideRepository() = MainRepository()
 }
