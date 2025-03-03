@@ -9,7 +9,7 @@ object Converter {
         list?.forEach {
             result.add(Film(
                 title = it.title,
-                poster = it.posterPath,
+                poster = it.posterPath ?: "https://www.kino-teatr.ru/static/images/no_poster.jpg",
                 description = it.overview,
                 rating = it.voteAverage,
                 isInFavorites = false
