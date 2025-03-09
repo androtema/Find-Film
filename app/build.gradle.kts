@@ -50,19 +50,21 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation (libs.androidx.coordinatorlayout)
-
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation (libs.material.v1120)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.swiperefreshlayout)
 
+    //Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    //Glide Lottie
     implementation(libs.glide)
     implementation (libs.lottie)
 
+    //Gson Retrofit
     implementation (libs.gson)
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
