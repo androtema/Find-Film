@@ -1,6 +1,7 @@
 package com.temalu.findfilm.view
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import com.temalu.findfilm.view.fragments.LaterWatchFragment
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.view.fragments.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private val TAG_FAVORITE_FRAGMENT = "favorites"
     private val TAG_SLECTIONS_FRAGMENT = "selections"
     private val TAG_LATER_FRAGMENT = "watch_later"
+    private val TAG_SETTINGS_FRAGMENT = "settings"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //"разрешение" использовать экран целиком (включая up/down menu navigation)
@@ -84,6 +87,12 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Главное меню", Toast.LENGTH_SHORT).show()
                     true
                 }
+
+                R.id.settings -> {
+                    val fragment = checkFragmentExistence(TAG_SETTINGS_FRAGMENT)
+                    changeFragment( fragment?: SettingsFragment(), TAG_SETTINGS_FRAGMENT)
+                    true
+                }
                 else -> false
             }
         }
@@ -104,10 +113,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount == 1) {
-            if (backPressedTime + TIME_INTERVAL > System.currentTimeMillis()) {
+            if (TIME_INTERVAL > System.currentTimeMillis() - backPressedTime) {
                 super.onBackPressedDispatcher.onBackPressed()
                 finish()
             } else {
+                backPressedTime = System.currentTimeMillis()
                 Toast.makeText(this, "Чтобы выйти нажмите ещё раз", Toast.LENGTH_SHORT).show()
             }
         } else {

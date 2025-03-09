@@ -1,4 +1,4 @@
-package com.temalu.findfilm.data
+package com.temalu.findfilm.data.Tmdb
 
 object API_TMDB {
     const val BASE_URL = "https://api.themoviedb.org/"

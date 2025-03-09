@@ -2,8 +2,7 @@ package com.temalu.findfilm.view.rv_viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.temalu.findfilm.data.API_KEY
-import com.temalu.findfilm.data.API_TMDB
+import com.temalu.findfilm.data.Tmdb.API_TMDB
 import com.temalu.findfilm.databinding.FilmItemBinding
 import com.temalu.findfilm.domain.Film
 

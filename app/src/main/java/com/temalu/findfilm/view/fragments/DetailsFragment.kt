@@ -2,7 +2,6 @@ package com.temalu.findfilm.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +11,7 @@ import androidx.transition.Slide
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.temalu.findfilm.R
-import com.temalu.findfilm.data.API_KEY
-import com.temalu.findfilm.data.API_TMDB
+import com.temalu.findfilm.data.Tmdb.API_TMDB
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
 import com.temalu.findfilm.domain.Film
 import com.temalu.findfilm.view.MainActivity
