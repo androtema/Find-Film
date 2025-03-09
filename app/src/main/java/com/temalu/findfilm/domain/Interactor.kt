@@ -1,11 +1,11 @@
 package com.temalu.findfilm.domain
 
 import com.temalu.findfilm.data.MainRepository
-import com.temalu.findfilm.data.Tmdb.API_KEY
 import com.temalu.findfilm.data.PreferenceProvider
-import com.temalu.findfilm.data.Repository
-import com.temalu.findfilm.data.Tmdb.TmdbApi
-import com.temalu.findfilm.data.Tmdb.TmdbResultsDto
+import com.temalu.findfilm.data.tmdb.API_KEY
+import com.temalu.findfilm.data.tmdb.TmdbApi
+import com.temalu.findfilm.data.tmdb.TmdbResultsDto
+import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.utils.Converter
 import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
 import retrofit2.Call
@@ -30,7 +30,7 @@ class Interactor(
                 val list = Converter.convertApiListToDtoList(response.body()?.tmdbFilms)
                 //Кладем фильмы в бд
                 list.forEach {
-                    repo.putToDb(film = it)
+                    repo.putToDb(list)
                 }
                 callback.onSuccess(list)
             }

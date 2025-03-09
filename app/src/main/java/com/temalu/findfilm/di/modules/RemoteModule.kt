@@ -1,8 +1,8 @@
 package com.temalu.findfilm.di.modules
 
 import com.temalu.findfilm.BuildConfig
-import com.temalu.findfilm.data.Tmdb.API_TMDB
-import com.temalu.findfilm.data.Tmdb.TmdbApi
+import com.temalu.findfilm.data.tmdb.API_TMDB
+import com.temalu.findfilm.data.tmdb.TmdbApi
 import dagger.Module
 import dagger.Provides
 import jakarta.inject.Singleton

@@ -2,9 +2,9 @@ package com.temalu.findfilm.view.rv_viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.temalu.findfilm.data.Tmdb.API_TMDB
+import com.temalu.findfilm.data.tmdb.API_TMDB
 import com.temalu.findfilm.databinding.FilmItemBinding
-import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.data.entity.Film
 
 class FilmViewHolder(val filmItem: FilmItemBinding) : RecyclerView.ViewHolder(filmItem.root) {
     private val title = filmItem.title

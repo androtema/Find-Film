@@ -1,7 +1,7 @@
 package com.temalu.findfilm.view.rv_adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.data.entity.Film
 
 class DiffUtilFilms(private val oldList: List<Film>, private val newList: List<Film>) :
     DiffUtil.Callback() {

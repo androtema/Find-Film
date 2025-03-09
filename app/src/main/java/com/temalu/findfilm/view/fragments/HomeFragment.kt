@@ -1,13 +1,13 @@
 package com.temalu.findfilm.view.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,8 +18,7 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FragmentHomeBinding
-import com.temalu.findfilm.databinding.MergeHomeScreenContentBinding
-import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.utils.AnimationHelper
 import com.temalu.findfilm.view.MainActivity
 import com.temalu.findfilm.view.rv_adapters.FilmListRecyclerAdapter
@@ -40,9 +39,8 @@ class HomeFragment : Fragment() {
     private val TOTAL_PAGES = 500
     private var currentPage = 1
 
-    private val viewModel by lazy {
-        ViewModelProvider.NewInstanceFactory().create(HomeFragmentViewModel::class.java)
-    }
+    private val viewModel: HomeFragmentViewModel by viewModels()
+
 
 
     var filmsDataBase = listOf<Film>()

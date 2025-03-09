@@ -1,10 +1,10 @@
 package com.temalu.findfilm.di.modules
 
 import android.content.Context
+import androidx.room.Room
 import com.temalu.findfilm.data.MainRepository
-import com.temalu.findfilm.data.Repository
-import com.temalu.findfilm.data.db.DatabaseHelper
-import dagger.Binds
+import com.temalu.findfilm.data.dao.FilmDao
+import com.temalu.findfilm.data.db.AppDatabase
 import dagger.Module
 import dagger.Provides
 import jakarta.inject.Singleton
@@ -13,9 +13,15 @@ import jakarta.inject.Singleton
 class DatabaseModule {
     @Singleton
     @Provides
-    fun provideDatabaseHelper(context: Context) = DatabaseHelper(context)
+    fun provideFilmDao(context: Context) =
+        Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "film_db"
+        ).build().filmDao()
+
 
     @Provides
     @Singleton
-    fun provideRepository(databaseHelper: DatabaseHelper) = MainRepository(databaseHelper)
+    fun provideRepository(filmDao: FilmDao) = MainRepository(filmDao)
 }

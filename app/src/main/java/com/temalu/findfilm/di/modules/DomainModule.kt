@@ -3,18 +3,11 @@ package com.temalu.findfilm.di.modules
 import android.content.Context
 import com.temalu.findfilm.data.MainRepository
 import com.temalu.findfilm.data.PreferenceProvider
-import com.temalu.findfilm.data.Tmdb.TmdbApi
+import com.temalu.findfilm.data.tmdb.TmdbApi
 import com.temalu.findfilm.domain.Interactor
 import dagger.Module
 import dagger.Provides
 import jakarta.inject.Singleton
-
-/*@Module
-abstract class DomainModule {
-    @Singleton
-    @Binds
-    abstract fun provideInteractor(repository: MainRepository) : Repository
-}*/
 
 @Module
 //Передаем контекст для SharedPreferences через конструктор
