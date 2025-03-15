@@ -1,6 +1,5 @@
 package com.temalu.findfilm.view.rv_adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -10,9 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.temalu.findfilm.view.rv_viewholders.FilmViewHolder
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FilmItemBinding
-import com.temalu.findfilm.domain.Film
-import com.temalu.findfilm.view.fragments.HomeFragment
-import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
+import com.temalu.findfilm.data.entity.Film
 
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
     RecyclerView.Adapter<ViewHolder>() {

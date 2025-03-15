@@ -1,7 +1,6 @@
 package com.temalu.findfilm.view
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,7 @@ import com.temalu.findfilm.view.fragments.HomeFragment
 import com.temalu.findfilm.view.fragments.LaterWatchFragment
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
-import com.temalu.findfilm.domain.Film
+import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.view.fragments.SettingsFragment
 
 class MainActivity : AppCompatActivity() {

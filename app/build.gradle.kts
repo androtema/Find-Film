@@ -49,27 +49,35 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation (libs.androidx.coordinatorlayout)
+    implementation(libs.androidx.coordinatorlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
-    implementation (libs.material.v1120)
+    implementation(libs.material.v1120)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.swiperefreshlayout)
 
-    //Tests
+    //JUnit, Espresso
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    //Glide Lottie
+    
+    //Glide, Lottie
     implementation(libs.glide)
-    implementation (libs.lottie)
+    implementation(libs.lottie)
 
-    //Gson Retrofit
-    implementation (libs.gson)
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
-    implementation (libs.logging.interceptor)
+    //Retrofit, Gson
+    implementation(libs.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 
-    implementation (libs.dagger)
-    kapt (libs.dagger.compiler)
+    //Dagger
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
+
+    //Room
+    implementation (libs.androidx.room.runtime)
+    kapt (libs.androidx.room.compiler)
+
+    //WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
 }

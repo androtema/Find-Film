@@ -1,4 +1,4 @@
-package com.temalu.findfilm.data.Tmdb
+package com.temalu.findfilm.data.tmdb
 
 import com.google.gson.annotations.SerializedName
 
