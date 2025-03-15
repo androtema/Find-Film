@@ -59,7 +59,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
+    
     //Glide, Lottie
     implementation(libs.glide)
     implementation(libs.lottie)
