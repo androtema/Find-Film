@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.temalu.findfilm.App
@@ -16,16 +17,21 @@ import java.util.concurrent.TimeUnit
 
 
 class HomeFragmentViewModel(application: Application) : AndroidViewModel(application) {
+    private val _showProgressBar = MutableLiveData<Boolean>()
+    val showProgressBar: LiveData<Boolean> = _showProgressBar
 
+    private val _showErrorToast = MutableLiveData<Unit>() // Для события ошибки
+    val showErrorToast: LiveData<Unit> = _showErrorToast
+
+    val filmsListLiveData: LiveData<List<Film>>
+    //таймер удаления БД
     val workRequest = OneTimeWorkRequestBuilder<DeleteDatabaseWorker>()
         .setInitialDelay(TIME_DELETE_BD, TimeUnit.SECONDS)
         .build()
 
-    //Инициализируем интерактор
     @Inject
     lateinit var interactor: Interactor
 
-    val filmsListLiveData: LiveData<List<Film>>
 
     init {
         App.instance.dagger.inject(this)
@@ -34,9 +40,10 @@ class HomeFragmentViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun loadPage(page: Int) {
+        _showProgressBar.postValue(true)
         interactor.getFilmsFromApi(page, object : ApiCallback {
             override fun onSuccess() {
-
+                _showProgressBar.postValue(false)
             }
 
             override fun onFailure() {
@@ -44,6 +51,9 @@ class HomeFragmentViewModel(application: Application) : AndroidViewModel(applica
                     val context = getApplication<Application>().applicationContext
                     WorkManager.getInstance(context).enqueue(workRequest)
                     Log.d("Delete_bd", "HomeFragmentViewModel : loadPage - ПОДАЧА КОМАНДЫ ОБ УДАЛЕНИИ БД")
+
+                    _showProgressBar.postValue(false)
+                    _showErrorToast.postValue(Unit)
                 }
             }
         })

@@ -5,11 +5,13 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.SearchView
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
@@ -17,8 +19,8 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.temalu.findfilm.R
-import com.temalu.findfilm.databinding.FragmentHomeBinding
 import com.temalu.findfilm.data.entity.Film
+import com.temalu.findfilm.databinding.FragmentHomeBinding
 import com.temalu.findfilm.utils.AnimationHelper
 import com.temalu.findfilm.view.MainActivity
 import com.temalu.findfilm.view.rv_adapters.FilmListRecyclerAdapter
@@ -40,8 +42,6 @@ class HomeFragment : Fragment() {
     private var currentPage = 1
 
     private val viewModel: HomeFragmentViewModel by viewModels()
-
-
 
     var filmsDataBase = listOf<Film>()
         set(value) {
@@ -66,17 +66,31 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val scene = addScene()
+        workWithViewModel()
+        addAnimation(scene)
+        addRecyclerAndDecorator(scene)
+        recyclerViewSetScroollListener()
+        initSearchView(scene)
+    }
+
+    private fun workWithViewModel() {
         viewModel.loadPage(currentPage)
 
+        //подписка - БД
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
             filmsDataBase = it
             filmsAdapter.addItems(it)
         })
 
-        addAnimation(scene)
-        addRecyclerAndDecorator(scene)
-        recyclerViewSetScroollListener()
-        initSearchView(scene)
+        //подписка - прогрессБар и тост для загрузки фильмов
+        viewModel.showProgressBar.observe(viewLifecycleOwner, Observer<Boolean> {
+            bindingHomeFragment.homeFragmentRoot
+                .findViewById<ProgressBar>(R.id.progress_bar)
+                .isVisible = it
+        })
+        viewModel.showErrorToast.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), "Проблемы со связью", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun addScene(): Scene {

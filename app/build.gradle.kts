@@ -80,4 +80,13 @@ dependencies {
 
     //WorkManager
     implementation(libs.androidx.work.runtime.ktx)
+
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    // LiveData
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    // Saved state module for ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
+    // Annotation processor
+    kapt(libs.androidx.lifecycle.compiler)
 }
