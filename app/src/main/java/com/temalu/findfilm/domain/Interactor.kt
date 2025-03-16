@@ -7,8 +7,8 @@ import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.data.tmdb.API_KEY
 import com.temalu.findfilm.data.tmdb.TmdbApi
 import com.temalu.findfilm.data.tmdb.TmdbResultsDto
-import com.temalu.findfilm.utils.Converter
-import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
+import com.temalu.findfilm.presentation.utils.Converter
+import com.temalu.findfilm.presentation.viewmodel.HomeFragmentViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

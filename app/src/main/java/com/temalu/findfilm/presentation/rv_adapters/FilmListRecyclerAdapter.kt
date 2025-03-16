@@ -1,4 +1,4 @@
-package com.temalu.findfilm.view.rv_adapters
+package com.temalu.findfilm.presentation.rv_adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.temalu.findfilm.view.rv_viewholders.FilmViewHolder
+import com.temalu.findfilm.presentation.rv_viewholders.FilmViewHolder
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FilmItemBinding
 import com.temalu.findfilm.data.entity.Film
@@ -56,9 +56,9 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
         val diff = DiffUtilFilms(
             items,
             newList
-        )           //сравниваем список который был в FilmListRecyclerAdapter с тем что пришёл из базы
+        )
         val diffResult = DiffUtil.calculateDiff(diff)
-        items = newList                               //обновляем наш список
+        items = newList
         diffResult.dispatchUpdatesTo(this@FilmListRecyclerAdapter)
     }
 

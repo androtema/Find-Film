@@ -1,6 +1,7 @@
-package com.temalu.findfilm.view.fragments
+package com.temalu.findfilm.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
@@ -21,11 +23,15 @@ import androidx.transition.TransitionSet
 import com.temalu.findfilm.R
 import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.databinding.FragmentHomeBinding
-import com.temalu.findfilm.utils.AnimationHelper
-import com.temalu.findfilm.view.MainActivity
-import com.temalu.findfilm.view.rv_adapters.FilmListRecyclerAdapter
-import com.temalu.findfilm.view.rv_adapters.TopSpacingItemDecoration
-import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
+import com.temalu.findfilm.presentation.utils.AnimationHelper
+import com.temalu.findfilm.presentation.MainActivity
+import com.temalu.findfilm.presentation.rv_adapters.FilmListRecyclerAdapter
+import com.temalu.findfilm.presentation.rv_adapters.TopSpacingItemDecoration
+import com.temalu.findfilm.presentation.viewmodel.HomeFragmentViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 
@@ -40,26 +46,26 @@ class HomeFragment : Fragment() {
 
     private val TOTAL_PAGES = 500
     private var currentPage = 1
+    private var isLoading = false
+    private var firstStart = true
+    private var scene: Scene? = null
 
     private val viewModel: HomeFragmentViewModel by viewModels()
 
     var filmsDataBase = listOf<Film>()
         set(value) {
-            //Если придет такое же значение, то мы выходим из метода
             if (field == value) return
-            //Если пришло другое значение, то кладем его в переменную
             field = value
-            //Обновляем RV адаптер
             filmsAdapter.addItems(field)
         }
-
-    var firstStart = true   //для определения первого запуска приложения
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _bindingHomeFragment = FragmentHomeBinding.inflate(layoutInflater)
+        Log.d("HomeFragment", "ЗАПУСК!!!!!!!!!")
+
         return bindingHomeFragment.root
     }
 
@@ -88,18 +94,20 @@ class HomeFragment : Fragment() {
                 .findViewById<ProgressBar>(R.id.progress_bar)
                 .isVisible = it
         })
-        viewModel.showErrorToast.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), "Проблемы со связью", Toast.LENGTH_LONG).show()
+        viewModel.showToastEvent.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun addScene(): Scene {
-        val scene = Scene.getSceneForLayout(
-            bindingHomeFragment.homeFragmentRoot,
-            R.layout.merge_home_screen_content,
-            requireContext()
-        )
-        return scene
+        if (scene == null) {
+            scene = Scene.getSceneForLayout(
+                bindingHomeFragment.homeFragmentRoot,
+                R.layout.merge_home_screen_content,
+                requireContext()
+            )
+        }
+        return scene!!
     }
 
     private fun addRecyclerAndDecorator(scene: Scene) {
@@ -144,22 +152,17 @@ class HomeFragment : Fragment() {
     // слушатель скролла для реализации подгрузки контента
     private fun recyclerViewSetScroollListener() {
         val scrollListener = object : RecyclerView.OnScrollListener() {
-            @Override
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val layoutManager = recyclerView.layoutManager as RecyclerView.LayoutManager
-                //смотрим сколько элементов на экране
                 val visibleItemCount: Int = layoutManager.childCount
-                //сколько всего элементов
                 val totalItemCount: Int = layoutManager.itemCount
-                //какая позиция первого элемента
                 val firstVisibleItems = (recyclerView.layoutManager as LinearLayoutManager)
                     .findFirstVisibleItemPosition()
-                //проверяем, грузим мы что-то или нет
-                // определяем начало загрузки следующей страницы
+
                 if (visibleItemCount + firstVisibleItems >= totalItemCount - 15) {
-                    //ставим флаг, что мы запросили ещё элементы
-                    currentPage++
-                    if (currentPage <= TOTAL_PAGES) {
+                    if (!isLoading && currentPage <= TOTAL_PAGES) {
+                        isLoading = true
+                        currentPage++
                         downloadNextPage(currentPage)
                     }
                 }
@@ -183,27 +186,24 @@ class HomeFragment : Fragment() {
                 return true
             }
 
-            //Этот метод отрабатывает на каждое изменения текста
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText!!.isEmpty()) {
-                    filmsAdapter.addItems(filmsDataBase)
-                    return true
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    val result = withContext(Dispatchers.Default) {
+                        filmsDataBase.filter {
+                            it.title
+                                .lowercase(Locale.getDefault())
+                                .contains(newText?.lowercase(Locale.getDefault()) ?: "") }
+                    }
+                    filmsAdapter.addItems(result)
                 }
-
-                //Фильтруем список на поискк подходящих сочетаний
-                val result = filmsDataBase.filter {
-                    //Чтобы все работало правильно, нужно и запрос, и имя фильма приводить к нижнему регистру
-                    it.title.lowercase(Locale.getDefault())
-                        .contains(newText.lowercase(Locale.getDefault()))
-                }
-                //Добавляем в адаптер
-                filmsAdapter.addItems(result)
                 return true
             }
         })
     }
 
     private fun downloadNextPage(page: Int) {
-        viewModel.loadPage(page)
+        viewModel.loadPage(page).also {
+            isLoading = false // После загрузки данных сбрасываем флаг
+        }
     }
 }

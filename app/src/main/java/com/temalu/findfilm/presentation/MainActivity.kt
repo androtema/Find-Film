@@ -1,19 +1,21 @@
-package com.temalu.findfilm.view
+package com.temalu.findfilm.presentation
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.temalu.findfilm.view.fragments.DetailsFragment
-import com.temalu.findfilm.view.fragments.DifferentFilmsFragment
-import com.temalu.findfilm.view.fragments.FavoritesFragment
-import com.temalu.findfilm.view.fragments.HomeFragment
-import com.temalu.findfilm.view.fragments.LaterWatchFragment
+import com.temalu.findfilm.presentation.fragments.DetailsFragment
+import com.temalu.findfilm.presentation.fragments.DifferentFilmsFragment
+import com.temalu.findfilm.presentation.fragments.FavoritesFragment
+import com.temalu.findfilm.presentation.fragments.HomeFragment
+import com.temalu.findfilm.presentation.fragments.LaterWatchFragment
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.data.entity.Film
-import com.temalu.findfilm.view.fragments.SettingsFragment
+import com.temalu.findfilm.presentation.fragments.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,16 +41,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun launchDetailsFragment(film: Film) {
-        //Создаем "посылку"
         val bundle = Bundle()
-        //Кладем наш фильм в "посылку"
         bundle.putParcelable("film", film)
-        //Кладем фрагмент с деталями в перменную
         val fragment = DetailsFragment()
-        //Прикрепляем нашу "посылку" к фрагменту
         fragment.arguments = bundle
 
-        //Запускаем фрагмент
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_placeholder, fragment)
@@ -97,16 +94,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //Ищем фрагмент по тегу, если он есть то возвращаем его, если нет, то null
     private fun checkFragmentExistence(tag: String): Fragment? =
         supportFragmentManager.findFragmentByTag(tag)
 
-    //запуск фрагмента
     private fun changeFragment(fragment: Fragment, tag: String) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_placeholder, fragment, tag)
-            .addToBackStack(null)
+            .addToBackStack(tag)
             .commit()
     }
 
@@ -123,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressedDispatcher.onBackPressed()
         }
     }
-    
+
     companion object {
         const val TIME_INTERVAL = 2000  //интервал времени для нажатия на back второй раз
         val favoritesList: MutableList<Film> = emptyList<Film>().toMutableList()

@@ -1,4 +1,4 @@
-package com.temalu.findfilm.view.rv_viewholders
+package com.temalu.findfilm.presentation.rv_viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide

@@ -1,4 +1,4 @@
-package com.temalu.findfilm.utils
+package com.temalu.findfilm.presentation.utils
 
 import com.temalu.findfilm.data.tmdb.TmdbFilm
 import com.temalu.findfilm.data.entity.Film

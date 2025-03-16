@@ -1,4 +1,4 @@
-package com.temalu.findfilm.view.customviews
+package com.temalu.findfilm.presentation.customviews
 
 import android.content.Context
 import android.graphics.Canvas

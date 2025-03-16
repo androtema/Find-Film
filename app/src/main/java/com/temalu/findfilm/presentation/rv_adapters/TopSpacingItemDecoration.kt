@@ -1,4 +1,4 @@
-package com.temalu.findfilm.view.rv_adapters
+package com.temalu.findfilm.presentation.rv_adapters
 
 import android.content.res.Resources
 import android.graphics.Rect

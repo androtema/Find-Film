@@ -1,4 +1,4 @@
-package com.temalu.findfilm.view.fragments
+package com.temalu.findfilm.presentation.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.temalu.findfilm.R
-import com.temalu.findfilm.databinding.FragmentDifferentFilmsBinding
 import com.temalu.findfilm.databinding.FragmentSettingsBinding
-import com.temalu.findfilm.utils.AnimationHelper
-import com.temalu.findfilm.viewmodel.SettingsFragmentViewModel
+import com.temalu.findfilm.presentation.utils.AnimationHelper
+import com.temalu.findfilm.presentation.viewmodel.SettingsFragmentViewModel
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding

@@ -1,4 +1,4 @@
-package com.temalu.findfilm.view.fragments
+package com.temalu.findfilm.presentation.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +14,7 @@ import com.temalu.findfilm.R
 import com.temalu.findfilm.data.tmdb.API_TMDB
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
 import com.temalu.findfilm.data.entity.Film
-import com.temalu.findfilm.view.MainActivity
+import com.temalu.findfilm.presentation.MainActivity
 
 class DetailsFragment : Fragment() {
 
