@@ -1,4 +1,4 @@
-package com.temalu.findfilm.utils
+package com.temalu.findfilm.presentation.utils
 
 import android.app.Activity
 import android.view.View

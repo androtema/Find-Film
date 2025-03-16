@@ -1,4 +1,4 @@
-package com.temalu.findfilm.viewmodel
+package com.temalu.findfilm.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

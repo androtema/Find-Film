@@ -1,4 +1,4 @@
-package com.temalu.findfilm.view.fragments
+package com.temalu.findfilm.presentation.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.temalu.findfilm.view.rv_adapters.FilmListRecyclerAdapter
-import com.temalu.findfilm.view.rv_adapters.TopSpacingItemDecoration
+import com.temalu.findfilm.presentation.rv_adapters.FilmListRecyclerAdapter
+import com.temalu.findfilm.presentation.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.databinding.FragmentFavoritesBinding
 import com.temalu.findfilm.data.entity.Film
-import com.temalu.findfilm.utils.AnimationHelper
-import com.temalu.findfilm.view.MainActivity
+import com.temalu.findfilm.presentation.utils.AnimationHelper
+import com.temalu.findfilm.presentation.MainActivity
 
 class FavoritesFragment : Fragment() {
 

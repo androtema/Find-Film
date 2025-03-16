@@ -7,7 +7,7 @@
     android:visibility="invisible"
     tools:visibility="visible"
     android:background="@drawable/menu_buttons"
-    tools:context=".view.fragments.HomeFragment">
+    tools:context=".presentation.fragments.HomeFragment">
 
     <include layout="@layout/merge_home_screen_content" />
 

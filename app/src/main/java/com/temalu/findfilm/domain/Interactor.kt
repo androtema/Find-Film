@@ -1,13 +1,14 @@
 package com.temalu.findfilm.domain
 
+import androidx.lifecycle.LiveData
 import com.temalu.findfilm.data.MainRepository
 import com.temalu.findfilm.data.PreferenceProvider
+import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.data.tmdb.API_KEY
 import com.temalu.findfilm.data.tmdb.TmdbApi
 import com.temalu.findfilm.data.tmdb.TmdbResultsDto
-import com.temalu.findfilm.data.entity.Film
-import com.temalu.findfilm.utils.Converter
-import com.temalu.findfilm.viewmodel.HomeFragmentViewModel
+import com.temalu.findfilm.presentation.utils.Converter
+import com.temalu.findfilm.presentation.viewmodel.HomeFragmentViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,14 +26,17 @@ class Interactor(
             "ru-RU",
             page
         ).enqueue(object : Callback<TmdbResultsDto> {
-            override fun onResponse(call: Call<TmdbResultsDto>, response: Response<TmdbResultsDto>) {
+            override fun onResponse(
+                call: Call<TmdbResultsDto>,
+                response: Response<TmdbResultsDto>
+            ) {
                 //При успехе мы вызываем метод, передаем onSuccess и в этот коллбэк список фильмов
                 val list = Converter.convertApiListToDtoList(response.body()?.tmdbFilms)
                 //Кладем фильмы в бд
                 list.forEach {
                     repo.putToDb(list)
                 }
-                callback.onSuccess(list)
+                callback.onSuccess()
             }
 
             override fun onFailure(call: Call<TmdbResultsDto>, t: Throwable) {
@@ -42,7 +46,7 @@ class Interactor(
         })
     }
 
-    fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
+    fun getFilmsFromDB(): LiveData<List<Film>> = repo.getAllFromDB()
 
 
     //Метод для сохранения настроек
