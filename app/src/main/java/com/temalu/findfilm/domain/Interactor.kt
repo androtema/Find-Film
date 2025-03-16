@@ -1,5 +1,6 @@
 package com.temalu.findfilm.domain
 
+import androidx.lifecycle.LiveData
 import com.temalu.findfilm.data.MainRepository
 import com.temalu.findfilm.data.PreferenceProvider
 import com.temalu.findfilm.data.tmdb.API_KEY
@@ -32,7 +33,7 @@ class Interactor(
                 list.forEach {
                     repo.putToDb(list)
                 }
-                callback.onSuccess(list)
+                callback.onSuccess()
             }
 
             override fun onFailure(call: Call<TmdbResultsDto>, t: Throwable) {
@@ -42,7 +43,7 @@ class Interactor(
         })
     }
 
-    fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
+    fun getFilmsFromDB(): LiveData<List<Film>> = repo.getAllFromDB()
 
 
     //Метод для сохранения настроек

@@ -3,8 +3,7 @@ package com.temalu.findfilm.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.temalu.findfilm.App
@@ -17,7 +16,6 @@ import java.util.concurrent.TimeUnit
 
 
 class HomeFragmentViewModel(application: Application) : AndroidViewModel(application) {
-    val filmsListLiveData: MutableLiveData<List<Film>> = MutableLiveData()
 
     val workRequest = OneTimeWorkRequestBuilder<DeleteDatabaseWorker>()
         .setInitialDelay(TIME_DELETE_BD, TimeUnit.SECONDS)
@@ -27,19 +25,22 @@ class HomeFragmentViewModel(application: Application) : AndroidViewModel(applica
     @Inject
     lateinit var interactor: Interactor
 
+    val filmsListLiveData: LiveData<List<Film>>
+
     init {
         App.instance.dagger.inject(this)
+
+        filmsListLiveData = interactor.getFilmsFromDB()
     }
 
     fun loadPage(page: Int) {
         interactor.getFilmsFromApi(page, object : ApiCallback {
-            override fun onSuccess(films: List<Film>) {
-                filmsListLiveData.postValue(films)
+            override fun onSuccess() {
+
             }
 
             override fun onFailure() {
                 Executors.newSingleThreadExecutor().execute {
-                    filmsListLiveData.postValue(interactor.getFilmsFromDB())
                     val context = getApplication<Application>().applicationContext
                     WorkManager.getInstance(context).enqueue(workRequest)
                     Log.d("Delete_bd", "HomeFragmentViewModel : loadPage - ПОДАЧА КОМАНДЫ ОБ УДАЛЕНИИ БД")
@@ -49,7 +50,7 @@ class HomeFragmentViewModel(application: Application) : AndroidViewModel(applica
     }
 
     interface ApiCallback {
-        fun onSuccess(films: List<Film>)
+        fun onSuccess()
         fun onFailure()
     }
 
