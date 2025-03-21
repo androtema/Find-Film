@@ -1,7 +1,6 @@
 package com.temalu.findfilm.presentation.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -23,13 +22,12 @@ import androidx.transition.TransitionSet
 import com.temalu.findfilm.R
 import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.databinding.FragmentHomeBinding
-import com.temalu.findfilm.presentation.utils.AnimationHelper
 import com.temalu.findfilm.presentation.MainActivity
 import com.temalu.findfilm.presentation.rv_adapters.FilmListRecyclerAdapter
 import com.temalu.findfilm.presentation.rv_adapters.TopSpacingItemDecoration
+import com.temalu.findfilm.presentation.utils.AnimationHelper
 import com.temalu.findfilm.presentation.viewmodel.HomeFragmentViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -64,8 +62,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _bindingHomeFragment = FragmentHomeBinding.inflate(layoutInflater)
-        Log.d("HomeFragment", "ЗАПУСК!!!!!!!!!")
-
         return bindingHomeFragment.root
     }
 
@@ -81,7 +77,6 @@ class HomeFragment : Fragment() {
 
     private fun workWithViewModel() {
         viewModel.loadPage(currentPage)
-
         //подписка - БД
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
             filmsDataBase = it
@@ -192,7 +187,8 @@ class HomeFragment : Fragment() {
                         filmsDataBase.filter {
                             it.title
                                 .lowercase(Locale.getDefault())
-                                .contains(newText?.lowercase(Locale.getDefault()) ?: "") }
+                                .contains(newText?.lowercase(Locale.getDefault()) ?: "")
+                        }
                     }
                     filmsAdapter.addItems(result)
                 }
