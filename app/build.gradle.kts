@@ -89,4 +89,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
     // Annotation processor
     kapt(libs.androidx.lifecycle.compiler)
+
+    //Coroutines
+    implementation (libs.kotlinx.coroutines.core)
+    implementation (libs.kotlinx.coroutines.android)
 }

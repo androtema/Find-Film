@@ -46,47 +46,52 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/details_fab_share"
+        style="@style/FabStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="70dp"
-        android:backgroundTint="@color/white"
         android:contentDescription="@null"
-        android:elevation="80dp"
-        app:borderWidth="0dp"
-        android:tint="@android:color/black"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|right"
-        app:srcCompat="@android:drawable/ic_menu_share" />
+        android:translationX="54dp"
+        app:layout_anchorGravity="bottom|center"
+        app:srcCompat="@drawable/baseline_share_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/details_fab_like"
+        style="@style/FabStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="5dp"
-        android:backgroundTint="@color/white"
         android:contentDescription="@null"
-        android:elevation="8dp"
-        android:tint="@android:color/black"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|right"
+        android:translationX="174dp"
+        app:layout_anchorGravity="bottom|center"
         app:srcCompat="@drawable/round_favorite_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/details_fab_later"
+        style="@style/FabStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="135dp"
-        android:backgroundTint="@color/white"
         android:contentDescription="@null"
-        android:elevation="8dp"
-        android:tint="@android:color/black"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|right"
+        android:translationX="114dp"
+        app:layout_anchorGravity="bottom|center"
         app:srcCompat="@drawable/round_watch_later_24" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/details_fab_download_wp"
+        style="@style/FabStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:translationX="6dp"
+        app:layout_anchorGravity="left|bottom"
+        app:srcCompat="@drawable/baseline_download_24" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:translationZ="10dp"
+        android:visibility="invisible"
+        app:layout_anchor="@id/details_fab_download_wp"
+        app:layout_anchorGravity="center" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -98,9 +103,9 @@
             android:id="@+id/details_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="17sp"
-            android:textColor="@color/black"
             android:layout_margin="8dp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
             tools:text="@tools:sample/lorem/random" />
 
     </androidx.core.widget.NestedScrollView>
