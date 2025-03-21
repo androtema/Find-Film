@@ -10,5 +10,4 @@
     tools:context=".presentation.fragments.HomeFragment">
 
     <include layout="@layout/merge_home_screen_content" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
