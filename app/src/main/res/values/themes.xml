@@ -11,4 +11,13 @@
         <attr name="progress" format="integer" />
         <attr name="stroke" format="float" />
     </declare-styleable>
+
+    <style name="FabStyle">
+        <item name="backgroundTint">@color/white</item>
+        <item name="tint">@android:color/black</item>
+        <item name="maxImageSize">30dp</item>
+        <item name="borderWidth">10dp</item>
+        <item name="elevation">16dp</item>
+        <item name="layout_anchor">@id/app_bar</item>
+    </style>
 </resources>
