@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     private val TAG_LATER_FRAGMENT = "watch_later"
     private val TAG_SETTINGS_FRAGMENT = "settings"
 
+    private var isProgrammaticSelection = false // Флаг для отслеживания программного изменения
+
     override fun onCreate(savedInstanceState: Bundle?) {
         //"разрешение" использовать экран целиком (включая up/down menu navigation)
         enableEdgeToEdge()
@@ -54,55 +56,94 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setBottomToast() {
-        binding.bottomNavigation.setOnItemSelectedListener {
-            when (it.itemId) {
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            if (isProgrammaticSelection) {
+                return@setOnItemSelectedListener true // Игнорируем программные изменения
+            }
+
+            when (item.itemId) {
                 R.id.favorites -> {
                     val fragment = checkFragmentExistence(TAG_FAVORITE_FRAGMENT)
                     changeFragment(fragment ?: FavoritesFragment(), TAG_FAVORITE_FRAGMENT)
-                    Toast.makeText(this, "Избранное", Toast.LENGTH_SHORT).show()
                     true
                 }
 
                 R.id.watch_later -> {
                     val fragment = checkFragmentExistence(TAG_LATER_FRAGMENT)
                     changeFragment(fragment ?: DifferentFilmsFragment(), TAG_LATER_FRAGMENT)
-                    Toast.makeText(this, "Посмотреть похже", Toast.LENGTH_SHORT).show()
                     true
                 }
 
                 R.id.selections -> {
                     val fragment = checkFragmentExistence(TAG_SLECTIONS_FRAGMENT)
                     changeFragment(fragment ?: LaterWatchFragment(), TAG_SLECTIONS_FRAGMENT)
-                    Toast.makeText(this, "Подборки", Toast.LENGTH_SHORT).show()
                     true
                 }
 
                 R.id.home -> {
                     val fragment = checkFragmentExistence(TAG_HOME_FRAGMENT)
                     changeFragment(fragment ?: HomeFragment(), TAG_HOME_FRAGMENT)
-                    Toast.makeText(this, "Главное меню", Toast.LENGTH_SHORT).show()
                     true
                 }
 
                 R.id.settings -> {
                     val fragment = checkFragmentExistence(TAG_SETTINGS_FRAGMENT)
-                    changeFragment( fragment?: SettingsFragment(), TAG_SETTINGS_FRAGMENT)
+                    changeFragment(fragment ?: SettingsFragment(), TAG_SETTINGS_FRAGMENT)
                     true
                 }
+
                 else -> false
             }
         }
+    }
+
+    private fun updateBottomNavigationSelectedItem(fragmentTag: String) {
+        isProgrammaticSelection = true // Указываем, что изменение программное
+        when (fragmentTag) {
+            TAG_HOME_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.home
+            TAG_FAVORITE_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.favorites
+            TAG_LATER_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.watch_later
+            TAG_SLECTIONS_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.selections
+            TAG_SETTINGS_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.settings
+        }
+        isProgrammaticSelection = false // Сбрасываем флаг
     }
 
     private fun checkFragmentExistence(tag: String): Fragment? =
         supportFragmentManager.findFragmentByTag(tag)
 
     private fun changeFragment(fragment: Fragment, tag: String) {
+        // Проверяем, есть ли фрагмент с таким же tag в back stack
+        if (isFragmentInBackStack(tag)) {
+            // Фрагмент уже есть в back stack, ничего не делаем
+            return
+        }
+
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_placeholder, fragment, tag)
             .addToBackStack(tag)
             .commit()
+
+        // Обновляем выбранный элемент в BottomNavigationView
+        updateBottomNavigationSelectedItem(tag)
+    }
+
+    private fun isFragmentInBackStack(tag: String): Boolean {
+        // Получаем количество записей в back stack
+        val backStackEntryCount = supportFragmentManager.backStackEntryCount
+
+        // Проходим по всем записям в back stack
+        for (i in 0 until backStackEntryCount) {
+            // Получаем тег фрагмента из back stack
+            val backStackEntry = supportFragmentManager.getBackStackEntryAt(i)
+            if (backStackEntry.name == tag) {
+                // Фрагмент с таким tag уже есть в back stack
+                return true
+            }
+        }
+        // Фрагмента с таким tag нет в back stack
+        return false
     }
 
     override fun onBackPressed() {
@@ -116,6 +157,13 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             super.onBackPressedDispatcher.onBackPressed()
+
+            // Обновляем выбранный элемент в BottomNavigationView
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_placeholder)
+            if (currentFragment != null) {
+                val fragmentTag = currentFragment.tag
+                updateBottomNavigationSelectedItem(fragmentTag!!)
+            }
         }
     }
 

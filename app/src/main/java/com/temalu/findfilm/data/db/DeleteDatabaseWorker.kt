@@ -12,10 +12,8 @@ class DeleteDatabaseWorker(
 
     override fun doWork(): Result {
         val dbFile = applicationContext.getDatabasePath("film_db")
-
         if (dbFile.exists()) {
             dbFile.delete()
-            Log.d("Delete_bd", "DeleteDatabaseWorker - УДАЛЕНИЕ БД")
         }
         return Result.success()
     }
