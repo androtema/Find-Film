@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -20,9 +21,9 @@ import androidx.transition.Slide
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.temalu.findfilm.R
+import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.data.tmdb.API_TMDB
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
-import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.presentation.MainActivity
 import com.temalu.findfilm.presentation.viewmodel.DetailsFragmentViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -54,14 +55,14 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setFilmsDetails()//добавляем данные фильма в активити
-        initSnackbar()      //задаём snackbar для fab
+        setFilmsDetails()
 
         detailsBinding.detailsFabLike.setOnClickListener {
             if (!film.isInFavorites) {
                 detailsBinding.detailsFabLike.setImageResource(R.drawable.round_favorite_24)
                 film.isInFavorites = true
                 MainActivity.favoritesList.add(film)
+                Toast.makeText(requireContext(), "Нравится!", Toast.LENGTH_SHORT).show()
             } else {
                 detailsBinding.detailsFabLike.setImageResource(R.drawable.favorite_add)
                 film.isInFavorites = false
@@ -216,17 +217,5 @@ class DetailsFragment : Fragment() {
             if (film.isInFavorites) R.drawable.round_favorite_24
             else R.drawable.favorite_add
         )
-    }
-
-    private fun initSnackbar() {
-        val snackbarLike = Snackbar.make(detailsBinding.main, "Нравится!", Snackbar.LENGTH_SHORT)
-        detailsBinding.detailsFabLike.setOnClickListener { snackbarLike.show() }
-
-        val snackbarShare = Snackbar.make(detailsBinding.main, "Поделиться", Snackbar.LENGTH_SHORT)
-        detailsBinding.detailsFabShare.setOnClickListener { snackbarShare.show() }
-
-        val snackbarLater =
-            Snackbar.make(detailsBinding.main, "Посмотреть позже", Snackbar.LENGTH_SHORT)
-        detailsBinding.detailsFabLater.setOnClickListener { snackbarLater.show() }
     }
 }

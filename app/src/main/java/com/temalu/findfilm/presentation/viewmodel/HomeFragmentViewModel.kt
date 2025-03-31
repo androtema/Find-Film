@@ -11,14 +11,12 @@ import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.domain.ApiResult
 import com.temalu.findfilm.domain.Interactor
 import jakarta.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
