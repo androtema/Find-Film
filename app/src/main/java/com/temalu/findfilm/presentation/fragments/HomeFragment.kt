@@ -11,8 +11,9 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
@@ -77,20 +78,32 @@ class HomeFragment : Fragment() {
 
     private fun workWithViewModel() {
         viewModel.loadPage(currentPage)
-        //подписка - БД
-        viewModel.filmsListLiveData.observe(viewLifecycleOwner, Observer<List<Film>> {
-            filmsDataBase = it
-            filmsAdapter.addItems(it)
-        })
 
-        //подписка - прогрессБар и тост для загрузки фильмов
-        viewModel.showProgressBar.observe(viewLifecycleOwner, Observer<Boolean> {
-            bindingHomeFragment.homeFragmentRoot
-                .findViewById<ProgressBar>(R.id.progress_bar)
-                .isVisible = it
-        })
-        viewModel.showToastEvent.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.filmsListFlow.collect { films ->
+                    filmsDataBase = films
+                    filmsAdapter.addItems(films)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.showProgressBar.collect { isLoading ->
+                    bindingHomeFragment.homeFragmentRoot
+                        .findViewById<ProgressBar>(R.id.progress_bar)
+                        .isVisible = isLoading
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.toastEvent.collect { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

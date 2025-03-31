@@ -7,7 +7,7 @@ import com.temalu.findfilm.data.entity.Film
 
 @Database(
     entities = [Film::class],
-    version = 1, //поменять на nextVersion и добавить autoMigrations (для простых изменений)
+    version = 1, //поменять на nextVersion (циферка 2, 3, 4...) и добавить autoMigrations (для простых изменений)
     exportSchema = true/*, autoMigrations = [AutoMigration(from = 1, to = 2)]*/
 )
 abstract class AppDatabase : RoomDatabase() {

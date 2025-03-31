@@ -1,34 +1,36 @@
 package com.temalu.findfilm.presentation.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.temalu.findfilm.App
 import com.temalu.findfilm.data.db.DeleteDatabaseWorker
 import com.temalu.findfilm.data.entity.Film
+import com.temalu.findfilm.domain.ApiResult
 import com.temalu.findfilm.domain.Interactor
-import com.temalu.findfilm.presentation.utils.SingleLiveEvent
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
 class HomeFragmentViewModel(application: Application) : AndroidViewModel(application) {
-    private val _showProgressBar = MutableLiveData<Boolean>()
-    val showProgressBar: LiveData<Boolean> = _showProgressBar
+    private val _showProgressBar = MutableStateFlow<Boolean>(false)
+    val showProgressBar: StateFlow<Boolean> = _showProgressBar
 
-    private val _showToastEvent = SingleLiveEvent<String>()
-    val showToastEvent: LiveData<String> = _showToastEvent
+    private val _toastEvent = MutableSharedFlow<String>()
+    val toastEvent: SharedFlow<String> = _toastEvent
 
-    val filmsListLiveData: LiveData<List<Film>>
+    val filmsListFlow: Flow<List<Film>>
 
     //таймер удаления БД
     val workRequest = OneTimeWorkRequestBuilder<DeleteDatabaseWorker>()
@@ -40,34 +42,31 @@ class HomeFragmentViewModel(application: Application) : AndroidViewModel(applica
 
     init {
         App.instance.dagger.inject(this)
-
-        filmsListLiveData = interactor.getFilmsFromDB()
+        filmsListFlow = interactor.getFilmsFromDB()
     }
 
     fun loadPage(page: Int) {
         viewModelScope.launch {
             _showProgressBar.value = true
-            withContext(Dispatchers.IO) {
-                interactor.getFilmsFromApi(page, object : ApiCallback {
-                    override fun onSuccess() {
-                        _showProgressBar.value = false
-                    }
 
-                    override fun onFailure() {
-                        val context = getApplication<Application>().applicationContext
-                        WorkManager.getInstance(context).enqueue(workRequest)
-
-                        _showProgressBar.postValue(false)
-                        _showToastEvent.postValue("Загрузка не удалась")
+            interactor.getFilmsFromApi(page)
+                .catch { error ->
+                    handleError(error)
+                }
+                .collect { result ->
+                    _showProgressBar.value = false
+                    when (result) {
+                        is ApiResult.Success -> Unit // Данные уже в filmsListFlow
+                        is ApiResult.Error -> handleError(result.throwable)
+                        is ApiResult.Loading -> Unit // Уже обрабатывается _showProgressBar
                     }
-                })
-            }
+                }
         }
     }
 
-    interface ApiCallback {
-        fun onSuccess()
-        fun onFailure()
+    private suspend fun handleError(error: Throwable) {
+        WorkManager.getInstance(getApplication()).enqueue(workRequest)
+        _toastEvent.emit("Ошибка загрузки: ${error.message ?: "Неизвестная ошибка"}")
     }
 
     companion object {

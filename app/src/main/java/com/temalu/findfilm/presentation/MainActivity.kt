@@ -1,20 +1,19 @@
 package com.temalu.findfilm.presentation
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.temalu.findfilm.R
+import com.temalu.findfilm.data.entity.Film
+import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.presentation.fragments.DetailsFragment
 import com.temalu.findfilm.presentation.fragments.DifferentFilmsFragment
 import com.temalu.findfilm.presentation.fragments.FavoritesFragment
 import com.temalu.findfilm.presentation.fragments.HomeFragment
 import com.temalu.findfilm.presentation.fragments.LaterWatchFragment
-import com.temalu.findfilm.R
-import com.temalu.findfilm.databinding.ActivityMainBinding
-import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.presentation.fragments.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
@@ -58,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     private fun setBottomToast() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             if (isProgrammaticSelection) {
-                return@setOnItemSelectedListener true // Игнорируем программные изменения
+                return@setOnItemSelectedListener true
             }
 
             when (item.itemId) {
@@ -113,40 +112,44 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.findFragmentByTag(tag)
 
     private fun changeFragment(fragment: Fragment, tag: String) {
+        logBackStack()
+
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_placeholder)
+        // Если это текущий фрагмент - ничего не делаем
+        if (currentFragment?.tag == tag) {
+            return
+        }
+
         // Проверяем, есть ли фрагмент с таким же tag в back stack
         if (isFragmentInBackStack(tag)) {
             // Фрагмент уже есть в back stack, ничего не делаем
+            supportFragmentManager.popBackStack(tag, 0)
+            updateBottomNavigationSelectedItem(tag)
             return
         }
 
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragment_placeholder, fragment, tag)
+            .add(R.id.fragment_placeholder, fragment, tag)
             .addToBackStack(tag)
             .commit()
-
         // Обновляем выбранный элемент в BottomNavigationView
         updateBottomNavigationSelectedItem(tag)
     }
 
     private fun isFragmentInBackStack(tag: String): Boolean {
-        // Получаем количество записей в back stack
-        val backStackEntryCount = supportFragmentManager.backStackEntryCount
-
-        // Проходим по всем записям в back stack
-        for (i in 0 until backStackEntryCount) {
-            // Получаем тег фрагмента из back stack
-            val backStackEntry = supportFragmentManager.getBackStackEntryAt(i)
-            if (backStackEntry.name == tag) {
-                // Фрагмент с таким tag уже есть в back stack
+        // Проверяем бэкстэк
+        for (i in 0 until supportFragmentManager.backStackEntryCount) {
+            if (supportFragmentManager.getBackStackEntryAt(i).name == tag) {
                 return true
             }
         }
-        // Фрагмента с таким tag нет в back stack
         return false
     }
 
     override fun onBackPressed() {
+        logBackStack()
+
         if (supportFragmentManager.backStackEntryCount == 1) {
             if (TIME_INTERVAL > System.currentTimeMillis() - backPressedTime) {
                 super.onBackPressedDispatcher.onBackPressed()
@@ -165,6 +168,11 @@ class MainActivity : AppCompatActivity() {
                 updateBottomNavigationSelectedItem(fragmentTag!!)
             }
         }
+    }
+
+    private fun logBackStack() {
+        val backStackEntryCount = supportFragmentManager.backStackEntryCount
+        Log.d("BACKSTACK", "Total fragments in back stack: $backStackEntryCount")
     }
 
     companion object {

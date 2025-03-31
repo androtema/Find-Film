@@ -1,22 +1,28 @@
 package com.temalu.findfilm.presentation.utils
 
-import com.temalu.findfilm.data.tmdb.TmdbFilm
 import com.temalu.findfilm.data.entity.Film
+import com.temalu.findfilm.data.tmdb.TmdbFilm
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 object Converter {
-    fun convertApiListToDtoList(list: List<TmdbFilm>?): List<Film> {
-        val result = mutableListOf<Film>()
-        list?.forEach {
-            result.add(
-                Film(
-                title = it.title,
-                poster = it.posterPath ?: "https://www.kino-teatr.ru/static/images/no_poster.jpg",
-                description = it.overview,
-                rating = it.voteAverage,
-                isInFavorites = false
-            )
-            )
-        }
-        return result
+
+    fun convertApiListToDtoListFlow(list: List<TmdbFilm>?): Flow<List<Film>> = flow {
+        val convertedList = list?.map { convertFilm(it) } ?: emptyList()
+        emit(convertedList)
+    }.flowOn(Dispatchers.Default)
+
+    private fun convertFilm(tmdbFilm: TmdbFilm): Film {
+        return Film(
+            title = tmdbFilm.title,
+            poster = tmdbFilm.posterPath ?: DEFAULT_POSTER_URL,
+            description = tmdbFilm.overview,
+            rating = tmdbFilm.voteAverage,
+            isInFavorites = false
+        )
     }
+
+    private const val DEFAULT_POSTER_URL = "https://www.kino-teatr.ru/static/images/no_poster.jpg"
 }

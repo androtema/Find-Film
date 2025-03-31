@@ -17,7 +17,12 @@
         <item name="tint">@android:color/black</item>
         <item name="maxImageSize">30dp</item>
         <item name="borderWidth">10dp</item>
-        <item name="elevation">16dp</item>
         <item name="layout_anchor">@id/app_bar</item>
+
+        <!-- elevation -->
+        <item name="rippleColor">@color/ripple_color</item>
+        <item name="elevation">6dp</item>
+        <item name="pressedTranslationZ">12dp</item>
+        <item name="hoveredFocusedTranslationZ">8dp</item>
     </style>
 </resources>
