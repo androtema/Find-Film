@@ -3,6 +3,7 @@ package com.temalu.findfilm.data
 import androidx.lifecycle.LiveData
 import com.temalu.findfilm.data.dao.FilmDao
 import com.temalu.findfilm.data.entity.Film
+import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.Executors
 
 class MainRepository(private val filmDao: FilmDao) : Repository {
@@ -14,7 +15,7 @@ class MainRepository(private val filmDao: FilmDao) : Repository {
         }
     }
 
-    override fun getAllFromDB(): LiveData<List<Film>> {
+    override fun getAllFromDB(): Flow<List<Film>> {
         return filmDao.getCachedFilms()
     }
 }
