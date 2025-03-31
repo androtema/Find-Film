@@ -1,19 +1,18 @@
 package com.temalu.findfilm.data
 
-import androidx.lifecycle.LiveData
 import com.temalu.findfilm.data.dao.FilmDao
 import com.temalu.findfilm.data.entity.Film
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import java.util.concurrent.Executors
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class MainRepository(private val filmDao: FilmDao) : Repository {
 
-    override fun putToDb(films: List<Film>) {
-        //Запросы в БД должны быть в отдельном потоке
-        Executors.newSingleThreadExecutor().execute {
-            filmDao.insertAll(films)
-        }
-    }
+    override fun putToDb(films: List<Film>): Flow<Unit> = flow {
+        filmDao.insertAll(films)
+        emit(Unit)
+    }.flowOn(Dispatchers.IO)
 
     override fun getAllFromDB(): Flow<List<Film>> {
         return filmDao.getCachedFilms()

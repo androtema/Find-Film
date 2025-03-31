@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    fun putToDb(films: List<Film>)
+    fun putToDb(films: List<Film>): Flow<Unit>
 
     fun getAllFromDB(): Flow<List<Film>>
 

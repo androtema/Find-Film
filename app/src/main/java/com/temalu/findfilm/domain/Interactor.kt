@@ -8,8 +8,12 @@ import com.temalu.findfilm.data.tmdb.TmdbApi
 import com.temalu.findfilm.presentation.utils.Converter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class Interactor(
     private val repo: MainRepository,
@@ -18,6 +22,8 @@ class Interactor(
 ) {
     fun getFilmsFromApi(page: Int): Flow<ApiResult> = flow {
         try {
+            emit(ApiResult.Loading)
+
             // Получаем данные синхронно с помощью корутин
             val response = retrofitService.getFilms(
                 getDefaultCategoryFromPreferences(),
@@ -26,13 +32,15 @@ class Interactor(
                 page
             )
 
-            val list = Converter.convertApiListToDtoList(response.tmdbFilms)
+            val films = Converter.convertApiListToDtoListFlow(response.tmdbFilms)
+                .first() // Получаем первый (и единственный) элемент Flow
 
-            // Сохраняем в БД (если repo поддерживает корутины)
-            repo.putToDb(list)
+            // Сохраняем в БД
+            repo.putToDb(films).collect()
 
             // Эмитируем успешный результат
-            emit(ApiResult.Success(list))
+            emit(ApiResult.Success(films))
+
         } catch (t: Throwable) {
             // Эмитируем ошибку
             emit(ApiResult.Error(t))
@@ -51,6 +59,7 @@ class Interactor(
 }
 
 sealed class ApiResult {
+    object Loading : ApiResult()
     data class Success(val films: List<Film>) : ApiResult()
     data class Error(val throwable: Throwable) : ApiResult()
 }
