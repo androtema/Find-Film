@@ -1,12 +1,12 @@
 package com.temalu.findfilm.data
 
-import androidx.lifecycle.LiveData
 import com.temalu.findfilm.data.entity.Film
+import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    fun putToDb(films: List<Film>)
+    fun putToDb(films: List<Film>): Flow<Unit>
 
-    fun getAllFromDB(): LiveData<List<Film>>
+    fun getAllFromDB(): Flow<List<Film>>
 
 }
