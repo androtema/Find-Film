@@ -1,6 +1,7 @@
 package com.temalu.findfilm.presentation.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,10 @@ import com.temalu.findfilm.presentation.rv_adapters.FilmListRecyclerAdapter
 import com.temalu.findfilm.presentation.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.presentation.utils.AnimationHelper
 import com.temalu.findfilm.presentation.viewmodel.HomeFragmentViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.internal.util.NotificationLite.disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,6 +53,8 @@ class HomeFragment : Fragment() {
     private var isLoading = false
     private var firstStart = true
     private var scene: Scene? = null
+
+    private val disposable = CompositeDisposable()
 
     private val viewModel: HomeFragmentViewModel by viewModels()
 
@@ -79,32 +86,42 @@ class HomeFragment : Fragment() {
     private fun workWithViewModel() {
         viewModel.loadPage(currentPage)
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.filmsListFlow.collect { films ->
+        // Подписка на список фильмов
+        viewModel.filmsListObservable
+            .subscribe(
+                { films ->
+                    Log.d("filmsListObservable","Films in Fragment: $films")
                     filmsDataBase = films
                     filmsAdapter.addItems(films)
-                }
-            }
-        }
+                },
+                { error -> Log.e("HomeFragment", "Error: ${error.message}") }
+            ).also { disposable.add(it) }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.showProgressBar.collect { isLoading ->
+        // Подписка на состояние ProgressBar
+        viewModel.showProgressBar
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { isLoading ->
                     bindingHomeFragment.homeFragmentRoot
                         .findViewById<ProgressBar>(R.id.progress_bar)
                         .isVisible = isLoading
+                },
+                { error ->
+                    Log.e("HomeFragment", "Error with progress bar: ${error.message}")
                 }
-            }
-        }
+            ).also { disposable.add(it) }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.toastEvent.collect { message ->
+        // Подписка на события тоста
+        viewModel.toastEvent
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { message ->
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                },
+                { error ->
+                    Log.e("HomeFragment", "Error with toast: ${error.message}")
                 }
-            }
-        }
+            ).also { disposable.add(it) }
     }
 
     private fun addScene(): Scene {
@@ -214,5 +231,11 @@ class HomeFragment : Fragment() {
         viewModel.loadPage(page).also {
             isLoading = false // После загрузки данных сбрасываем флаг
         }
+    }
+
+    override fun onDestroyView() {
+        disposable.clear()
+        super.onDestroyView()
+        _bindingHomeFragment = null
     }
 }

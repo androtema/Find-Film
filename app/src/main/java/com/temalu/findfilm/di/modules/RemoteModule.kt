@@ -9,6 +9,7 @@ import jakarta.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
@@ -35,6 +36,8 @@ class RemoteModule {
         .baseUrl(API_TMDB.BASE_URL)
         //Добавляем конвертер
         .addConverterFactory(GsonConverterFactory.create())
+        // Добавляем адаптер RxJava 3
+        .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
         //Добавляем кастомный клиент
         .client(okHttpClient)
         .build()

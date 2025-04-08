@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+    implementation (libs.adapter.rxjava3)
 
     //Dagger
     implementation(libs.dagger)
@@ -95,4 +96,10 @@ dependencies {
     //Coroutines
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
+
+    //RxJava3
+    implementation (libs.rxjava)
+    implementation (libs.rxandroid)
+    implementation(libs.androidx.room.rxjava3)
+
 }

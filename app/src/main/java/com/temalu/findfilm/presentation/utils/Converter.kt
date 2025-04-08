@@ -2,6 +2,8 @@ package com.temalu.findfilm.presentation.utils
 
 import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.data.tmdb.TmdbFilm
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -9,10 +11,11 @@ import kotlinx.coroutines.flow.flowOn
 
 object Converter {
 
-    fun convertApiListToDtoListFlow(list: List<TmdbFilm>?): Flow<List<Film>> = flow {
-        val convertedList = list?.map { convertFilm(it) } ?: emptyList()
-        emit(convertedList)
-    }.flowOn(Dispatchers.Default)
+    fun convertApiListToDto(list: List<TmdbFilm>?): Observable<List<Film>> {
+        return Observable.fromCallable {
+            list?.map { convertFilm(it) } ?: emptyList()
+        }.subscribeOn(Schedulers.computation())
+    }
 
     private fun convertFilm(tmdbFilm: TmdbFilm): Film {
         return Film(
