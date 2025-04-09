@@ -52,8 +52,8 @@
         android:clickable="true"
         android:contentDescription="@null"
         android:focusable="true"
-        android:translationX="54dp"
-        app:layout_anchorGravity="bottom|center"
+        android:translationX="-120dp"
+        app:layout_anchorGravity="bottom|right"
         app:srcCompat="@drawable/baseline_share_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -64,8 +64,7 @@
         android:clickable="true"
         android:contentDescription="@null"
         android:focusable="true"
-        android:translationX="174dp"
-        app:layout_anchorGravity="bottom|center"
+        app:layout_anchorGravity="bottom|right"
         app:srcCompat="@drawable/round_favorite_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -76,8 +75,8 @@
         android:clickable="true"
         android:contentDescription="@null"
         android:focusable="true"
-        android:translationX="114dp"
-        app:layout_anchorGravity="bottom|center"
+        android:translationX="-60dp"
+        app:layout_anchorGravity="bottom|right"
         app:srcCompat="@drawable/round_watch_later_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

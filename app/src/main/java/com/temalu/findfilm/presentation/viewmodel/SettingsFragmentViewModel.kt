@@ -10,6 +10,7 @@ class SettingsFragmentViewModel : ViewModel() {
     //Инжектим интерактор
     @Inject
     lateinit var interactor: Interactor
+
     val categoryPropertyLifeData: MutableLiveData<String> = MutableLiveData()
 
     init {
@@ -19,7 +20,6 @@ class SettingsFragmentViewModel : ViewModel() {
     }
 
     private fun getCategoryProperty() {
-        //Кладем категорию в LiveData
         categoryPropertyLifeData.value = interactor.getDefaultCategoryFromPreferences()
     }
 

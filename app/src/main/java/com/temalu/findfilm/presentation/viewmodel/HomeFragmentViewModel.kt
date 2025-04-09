@@ -1,8 +1,8 @@
 package com.temalu.findfilm.presentation.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.temalu.findfilm.App
@@ -10,27 +10,26 @@ import com.temalu.findfilm.data.db.DeleteDatabaseWorker
 import com.temalu.findfilm.data.entity.Film
 import com.temalu.findfilm.domain.ApiResult
 import com.temalu.findfilm.domain.Interactor
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
 import jakarta.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 
-class HomeFragmentViewModel(application: Application) : AndroidViewModel(application) {
-    private val _showProgressBar = MutableStateFlow<Boolean>(false)
-    val showProgressBar: StateFlow<Boolean> = _showProgressBar
+class HomeFragmentViewModel(private val application: Application) : AndroidViewModel(application) {
+    private val _showProgressBar = BehaviorSubject.createDefault(false)
+    val showProgressBar: Observable<Boolean> = _showProgressBar
 
-    private val _toastEvent = MutableSharedFlow<String>()
-    val toastEvent: SharedFlow<String> = _toastEvent
+    private val _toastEvent = PublishSubject.create<String>()
+    val toastEvent: Observable<String> = _toastEvent
 
-    val filmsListFlow: Flow<List<Film>>
+    val filmsListObservable: Observable<List<Film>>
+
+    private val disposable = CompositeDisposable()
 
     //таймер удаления БД
     val workRequest = OneTimeWorkRequestBuilder<DeleteDatabaseWorker>()
@@ -42,34 +41,45 @@ class HomeFragmentViewModel(application: Application) : AndroidViewModel(applica
 
     init {
         App.instance.dagger.inject(this)
-        filmsListFlow = interactor.getFilmsFromDB()
+        filmsListObservable = interactor.getFilmsFromDB()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { films -> Log.d("init","Films from DB: $films") }
     }
 
     fun loadPage(page: Int) {
-        viewModelScope.launch {
-            _showProgressBar.value = true
-
-            interactor.getFilmsFromApi(page)
-                .catch { error ->
+        interactor.getFilmsFromApi(page)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { _showProgressBar.onNext(true) } // Показываем ProgressBar перед началом
+            .subscribe(
+                { result ->
+                    _showProgressBar.onNext(false) // Скрываем ProgressBar
+                    when (result) {
+                        is ApiResult.Success -> Unit // Данные уже в filmsListObservable
+                        is ApiResult.Error -> handleError(result.throwable)
+                        is ApiResult.Loading -> Unit // Уже обрабатывается через _showProgressBar
+                    }
+                },
+                { error ->
+                    _showProgressBar.onNext(false) // Скрываем ProgressBar при ошибке
                     handleError(error)
                 }
-                .collect { result ->
-                    _showProgressBar.value = false
-                    when (result) {
-                        is ApiResult.Success -> Unit // Данные уже в filmsListFlow
-                        is ApiResult.Error -> handleError(result.throwable)
-                        is ApiResult.Loading -> Unit // Уже обрабатывается _showProgressBar
-                    }
-                }
-        }
+            ).also { disposable.add(it) }
     }
 
-    private suspend fun handleError(error: Throwable) {
-        WorkManager.getInstance(getApplication()).enqueue(workRequest)
-        _toastEvent.emit("Ошибка загрузки: ${error.message ?: "Неизвестная ошибка"}")
+    private fun handleError(error: Throwable) {
+        WorkManager.getInstance(application).enqueue(workRequest)
+        _toastEvent.onNext("Ошибка загрузки")
+        Log.d("HomeFragmentViewModel", "Ошибка загрузки: ${error.message ?: "Неизвестная ошибка"}")
     }
 
     companion object {
         private val TIME_DELETE_BD = 30L
+    }
+
+    override fun onCleared() {
+        disposable.clear() // Очистка подписок
+        super.onCleared()
     }
 }
