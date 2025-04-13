@@ -30,13 +30,17 @@ import com.temalu.findfilm.presentation.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.presentation.utils.AnimationHelper
 import com.temalu.findfilm.presentation.viewmodel.HomeFragmentViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.internal.util.NotificationLite.disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 
 class HomeFragment : Fragment() {
@@ -90,7 +94,7 @@ class HomeFragment : Fragment() {
         viewModel.filmsListObservable
             .subscribe(
                 { films ->
-                    Log.d("filmsListObservable","Films in Fragment: $films")
+                    Log.d("filmsListObservable", "Films in Fragment: $films")
                     filmsDataBase = films
                     filmsAdapter.addItems(films)
                 },
@@ -196,32 +200,55 @@ class HomeFragment : Fragment() {
         mainRecycler.addOnScrollListener(scrollListener)
     }
 
+
+    private var compositeDisposable = CompositeDisposable()
+
     private fun initSearchView(scene: Scene) {
-        //т.к. добавляем не ViewGroup, а layout, то наполняем View'хами по отдельности
         searchView = scene.sceneRoot.findViewById(R.id.search_view)
-        //чтобы нажимать на всю площадь вью поиска
         searchView.setOnClickListener {
             searchView.isIconified = false
         }
 
-        //Подключаем слушателя изменений введенного текста в поиска
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            //Этот метод отрабатывает при нажатии кнопки "поиск" на софт клавиатуре
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return true
-            }
+            override fun onQueryTextSubmit(query: String?): Boolean = true
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    val result = withContext(Dispatchers.Default) {
-                        filmsDataBase.filter {
-                            it.title
-                                .lowercase(Locale.getDefault())
-                                .contains(newText?.lowercase(Locale.getDefault()) ?: "")
+            override fun onQueryTextChange(newText: String): Boolean {
+                compositeDisposable.clear()
+
+                Observable.just<String>(newText)
+                    .debounce(500, TimeUnit.MILLISECONDS)
+                    .filter { it?.isNotEmpty() == true }
+                    .switchMap { query ->
+                        Observable.fromCallable {
+                            val queryStr = query?.lowercase(Locale.getDefault()) ?: ""
+                            filmsDataBase.filter { film ->
+                                film.title.lowercase(Locale.getDefault()).contains(queryStr)
+                            }
                         }
+                            .subscribeOn(Schedulers.io())
+                            .onErrorReturn { emptyList() }
                     }
-                    filmsAdapter.addItems(result)
-                }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        { results ->
+                            Log.d("HomeFragment", "Search $results")
+
+                            filmsAdapter.addItems(results, true)
+                            if (results.isEmpty()) {
+                                Toast.makeText(
+                                    context,
+                                    "Ничего не найдено по запросу \"${newText}\"",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        { error ->
+                            Log.e("HomeFragment", "Search error", error)
+                            // Можно показать сообщение об ошибке
+                        }
+                    )
+                    .also { compositeDisposable.add(it) }
+
                 return true
             }
         })
