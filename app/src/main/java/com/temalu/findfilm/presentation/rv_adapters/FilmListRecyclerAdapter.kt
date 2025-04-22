@@ -6,10 +6,10 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.temalu.findfilm.presentation.rv_viewholders.FilmViewHolder
 import com.temalu.findfilm.R
-import com.temalu.findfilm.databinding.FilmItemBinding
 import com.temalu.findfilm.data.entity.Film
+import com.temalu.findfilm.databinding.FilmItemBinding
+import com.temalu.findfilm.presentation.rv_viewholders.FilmViewHolder
 
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
     RecyclerView.Adapter<ViewHolder>() {
@@ -31,12 +31,7 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder) {
             is FilmViewHolder -> {
-                //Вызываем метод bind(), который мы создали, и передаем туда объект
-                //из нашей базы данных с указанием позиции
                 holder.bind(items[position])
-                //Обрабатываем нажатие на весь элемент целиком(можно сделать на отдельный элемент
-                //например, картинку) и вызываем метод нашего листенера, который мы получаем из
-                //конструктора адаптера
                 holder.itemView.setOnClickListener {
                     clickListener.click(items[position])
                 }
@@ -51,14 +46,12 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) :
         }
     }
 
-    fun addItems(list: List<Film>) {
-        val newList = items + list
-        val diff = DiffUtilFilms(
-            items,
-            newList
-        )
+    fun addItems(newList: List<Film>, isSearch: Boolean = false) {
+        val mergedList = if (isSearch) newList else (items + newList)
+        val diff = DiffUtilFilms(items, mergedList)
         val diffResult = DiffUtil.calculateDiff(diff)
-        items = newList
+
+        items = mergedList
         diffResult.dispatchUpdatesTo(this@FilmListRecyclerAdapter)
     }
 
