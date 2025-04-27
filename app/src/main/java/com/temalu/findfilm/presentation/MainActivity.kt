@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.temalu.findfilm.R
-import com.temalu.findfilm.data.entity.Film
+import com.androtema.local.data.entity.Film
 import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.presentation.fragments.DetailsFragment
 import com.temalu.findfilm.presentation.fragments.DifferentFilmsFragment

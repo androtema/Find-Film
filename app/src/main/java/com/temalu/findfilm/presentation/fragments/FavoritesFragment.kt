@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.temalu.findfilm.presentation.rv_adapters.FilmListRecyclerAdapter
 import com.temalu.findfilm.presentation.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.databinding.FragmentFavoritesBinding
-import com.temalu.findfilm.data.entity.Film
+import com.androtema.local.data.entity.Film
 import com.temalu.findfilm.presentation.utils.AnimationHelper
 import com.temalu.findfilm.presentation.MainActivity
 

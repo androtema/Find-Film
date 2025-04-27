@@ -21,8 +21,8 @@ import androidx.transition.Slide
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.temalu.findfilm.R
-import com.temalu.findfilm.data.entity.Film
-import com.temalu.findfilm.data.tmdb.API_TMDB
+import com.androtema.local.data.entity.Film
+import com.androtema.remote.data.tmdb.API_TMDB
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
 import com.temalu.findfilm.presentation.MainActivity
 import com.temalu.findfilm.presentation.viewmodel.DetailsFragmentViewModel

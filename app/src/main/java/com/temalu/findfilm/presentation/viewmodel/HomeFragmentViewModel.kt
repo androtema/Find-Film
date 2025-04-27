@@ -6,8 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.temalu.findfilm.App
-import com.temalu.findfilm.data.db.DeleteDatabaseWorker
-import com.temalu.findfilm.data.entity.Film
+import com.androtema.local.data.db.DeleteDatabaseWorker
+import com.androtema.local.data.entity.Film
 import com.temalu.findfilm.domain.ApiResult
 import com.temalu.findfilm.domain.Interactor
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

@@ -1,13 +1,9 @@
 package com.temalu.findfilm.presentation.utils
 
-import com.temalu.findfilm.data.entity.Film
-import com.temalu.findfilm.data.tmdb.TmdbFilm
+import com.androtema.local.data.entity.Film
+import com.androtema.remote.data.tmdb.TmdbFilm
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 
 object Converter {
 

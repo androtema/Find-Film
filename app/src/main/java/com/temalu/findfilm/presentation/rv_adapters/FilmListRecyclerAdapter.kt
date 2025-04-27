@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.temalu.findfilm.R
-import com.temalu.findfilm.data.entity.Film
+import com.androtema.local.data.entity.Film
 import com.temalu.findfilm.databinding.FilmItemBinding
 import com.temalu.findfilm.presentation.rv_viewholders.FilmViewHolder
 
