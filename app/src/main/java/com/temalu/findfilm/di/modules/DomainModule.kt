@@ -1,9 +1,9 @@
 package com.temalu.findfilm.di.modules
 
 import android.content.Context
-import com.temalu.findfilm.data.MainRepository
-import com.temalu.findfilm.data.PreferenceProvider
-import com.temalu.findfilm.data.tmdb.TmdbApi
+import com.androtema.local.data.MainRepository
+import com.androtema.local.data.PreferenceProvider
+import com.androtema.remote.data.tmdb.TmdbApi
 import com.temalu.findfilm.domain.Interactor
 import dagger.Module
 import dagger.Provides

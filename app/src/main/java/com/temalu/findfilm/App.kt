@@ -4,9 +4,9 @@ import android.app.Application
 import com.temalu.findfilm.di.AppComponent
 import com.temalu.findfilm.di.DaggerAppComponent
 
-import com.temalu.findfilm.di.modules.DatabaseModule
+import com.androtema.local.di.DatabaseModule
 import com.temalu.findfilm.di.modules.DomainModule
-import com.temalu.findfilm.di.modules.RemoteModule
+import com.androtema.remote.di.RemoteModule
 
 class App : Application() {
     lateinit var dagger: AppComponent

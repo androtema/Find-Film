@@ -65,20 +65,12 @@ dependencies {
     implementation(libs.lottie)
 
     //Retrofit, Gson
-    implementation(libs.gson)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     implementation (libs.adapter.rxjava3)
 
     //Dagger
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
-
-    //Room
-    implementation (libs.androidx.room.runtime)
-    kapt (libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
 
 
     //WorkManager
@@ -100,6 +92,9 @@ dependencies {
     //RxJava3
     implementation (libs.rxjava)
     implementation (libs.rxandroid)
-    implementation(libs.androidx.room.rxjava3)
+
+    // add module
+    implementation(project(":remote"))
+    implementation(project(":local"))
 
 }

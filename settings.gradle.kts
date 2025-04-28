@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Find Film"
 include(":app")
- 
+include(":remote")
+include(":local")
