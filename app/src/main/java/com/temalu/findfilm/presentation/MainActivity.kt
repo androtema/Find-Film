@@ -1,13 +1,15 @@
 package com.temalu.findfilm.presentation
 
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.temalu.findfilm.R
 import com.androtema.local.data.entity.Film
+import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.presentation.fragments.DetailsFragment
 import com.temalu.findfilm.presentation.fragments.DifferentFilmsFragment
@@ -15,6 +17,7 @@ import com.temalu.findfilm.presentation.fragments.FavoritesFragment
 import com.temalu.findfilm.presentation.fragments.HomeFragment
 import com.temalu.findfilm.presentation.fragments.LaterWatchFragment
 import com.temalu.findfilm.presentation.fragments.SettingsFragment
+import com.temalu.findfilm.receivers.BatteryReceiver
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +42,12 @@ class MainActivity : AppCompatActivity() {
         setBottomToast()
         //запускаем стартовый фрагмент
         changeFragment(HomeFragment(), TAG_HOME_FRAGMENT)
+
+        val receiver = BatteryReceiver()
+        val filter = IntentFilter(Intent.ACTION_BATTERY_LOW)
+        filter.addAction(Intent.ACTION_POWER_CONNECTED)
+        filter.addAction(Intent.ACTION_BATTERY_OKAY)
+        registerReceiver(receiver, filter)
     }
 
     fun launchDetailsFragment(film: Film) {
