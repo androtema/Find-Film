@@ -1,6 +1,7 @@
 package com.temalu.findfilm.presentation.fragments
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,13 +19,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
+import com.androtema.local.data.entity.Film
+import com.androtema.remote.data.tmdb.API_TMDB
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.temalu.findfilm.R
-import com.androtema.local.data.entity.Film
-import com.androtema.remote.data.tmdb.API_TMDB
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
 import com.temalu.findfilm.presentation.MainActivity
+import com.temalu.findfilm.presentation.notifications.NotificationRememberFilm
 import com.temalu.findfilm.presentation.viewmodel.DetailsFragmentViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +40,7 @@ class DetailsFragment : Fragment() {
         enterTransition = Slide(Gravity.END).apply { duration = 500 }
     }
 
-    private lateinit var detailsBinding: FragmentDetailsBinding
+    private lateinit var binding: FragmentDetailsBinding
 
     private lateinit var film: Film
     private val viewModel = DetailsFragmentViewModel()
@@ -48,30 +50,30 @@ class DetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        detailsBinding = FragmentDetailsBinding.inflate(layoutInflater)
-        return detailsBinding.root
+        binding = FragmentDetailsBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setFilmsDetails()
-
-        detailsBinding.detailsFabLike.setOnClickListener {
+        saveFilmToNotification()
+        binding.detailsFabLike.setOnClickListener {
             if (!film.isInFavorites) {
-                detailsBinding.detailsFabLike.setImageResource(R.drawable.round_favorite_24)
+                binding.detailsFabLike.setImageResource(R.drawable.round_favorite_24)
                 film.isInFavorites = true
                 MainActivity.favoritesList.add(film)
                 Toast.makeText(requireContext(), "Нравится!", Toast.LENGTH_SHORT).show()
             } else {
-                detailsBinding.detailsFabLike.setImageResource(R.drawable.favorite_add)
+                binding.detailsFabLike.setImageResource(R.drawable.favorite_add)
                 film.isInFavorites = false
                 MainActivity.favoritesList.remove(film)
             }
         }
 
         //задаём действие кнопки ПОДЕЛИТЬСЯ
-        detailsBinding.detailsFabShare.setOnClickListener {
+        binding.detailsFabShare.setOnClickListener {
             //Создаем интент
             val intent = Intent()
             //Укзываем action с которым он запускается
@@ -87,8 +89,16 @@ class DetailsFragment : Fragment() {
             startActivity(Intent.createChooser(intent, "Share To:"))
         }
 
-        detailsBinding.detailsFabDownloadWp.setOnClickListener {
+        binding.detailsFabDownloadWp.setOnClickListener {
             performAsyncLoadOfPoster()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun saveFilmToNotification() {
+        binding.detailsFabLater.setOnLongClickListener {
+            NotificationRememberFilm.createNotification(requireContext(), film)
+            true
         }
     }
 
@@ -120,7 +130,7 @@ class DetailsFragment : Fragment() {
         //Создаем родительский скоуп с диспатчером Main потока, так как будем взаимодействовать с UI
         MainScope().launch {
             //Включаем Прогресс-бар
-            detailsBinding.progressBar.isVisible = true
+            binding.progressBar.isVisible = true
             //Создаем через async, так как нам нужен результат от работы, то есть Bitmap
             val job = scope.async {
                 viewModel.loadWallpaper(API_TMDB.IMAGES_URL + "original" + film.poster)
@@ -129,7 +139,7 @@ class DetailsFragment : Fragment() {
             saveToGallery(job.await())
             //Выводим снекбар с кнопкой перейти в галерею
             Snackbar.make(
-                detailsBinding.root,
+                binding.root,
                 R.string.downloaded_to_gallery,
                 Snackbar.LENGTH_LONG
             )
@@ -143,7 +153,7 @@ class DetailsFragment : Fragment() {
                 .show()
 
             //Отключаем Прогресс-бар
-            detailsBinding.progressBar.isVisible = false
+            binding.progressBar.isVisible = false
         }
     }
 
@@ -204,16 +214,16 @@ class DetailsFragment : Fragment() {
         film = arguments?.get("film") as Film
 
         //Устанавливаем заголовок
-        detailsBinding.detailsToolbar.title = film.title
+        binding.detailsToolbar.title = film.title
         //Устанавливаем картинку
         Glide.with(this)
             .load(API_TMDB.IMAGES_URL + "w500" + film.poster)
             .centerCrop()
-            .into(detailsBinding.detailsPoster)
+            .into(binding.detailsPoster)
         //Устанавливаем описание
-        detailsBinding.detailsDescription.text = film.description
+        binding.detailsDescription.text = film.description
 
-        detailsBinding.detailsFabLike.setImageResource(
+        binding.detailsFabLike.setImageResource(
             if (film.isInFavorites) R.drawable.round_favorite_24
             else R.drawable.favorite_add
         )
