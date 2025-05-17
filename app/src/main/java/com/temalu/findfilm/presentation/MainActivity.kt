@@ -2,6 +2,7 @@ package com.temalu.findfilm.presentation
 
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -39,15 +40,30 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         setBottomToast()
         //запускаем стартовый фрагмент
         changeFragment(HomeFragment(), TAG_HOME_FRAGMENT)
+        startSavedFilmInNotification()
 
         val receiver = BatteryReceiver()
         val filter = IntentFilter(Intent.ACTION_BATTERY_LOW)
         filter.addAction(Intent.ACTION_POWER_CONNECTED)
         filter.addAction(Intent.ACTION_BATTERY_OKAY)
         registerReceiver(receiver, filter)
+    }
+
+    private fun startSavedFilmInNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("film", Film::class.java)?.let { film ->
+                launchDetailsFragment(film)
+            }
+        }
+        else {
+            intent.getParcelableExtra<Film>("film")?.let { film ->
+                launchDetailsFragment(film)
+            }
+        }
     }
 
     fun launchDetailsFragment(film: Film) {
