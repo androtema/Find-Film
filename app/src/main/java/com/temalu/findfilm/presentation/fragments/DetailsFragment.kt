@@ -97,7 +97,7 @@ class DetailsFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun saveFilmToNotification() {
         binding.detailsFabLater.setOnLongClickListener {
-            NotificationRememberFilm.createNotification(requireContext(), film)
+            NotificationRememberFilm.notificationSet(requireContext(), film)
             true
         }
     }
