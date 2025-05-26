@@ -68,6 +68,10 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation (libs.adapter.rxjava3)
 
+    implementation(libs.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
     //Dagger
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
