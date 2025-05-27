@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
     id("kotlin-kapt")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -54,6 +55,8 @@ dependencies {
     implementation(libs.material.v1120)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.storage)
 
     //JUnit, Espresso
     testImplementation(libs.junit)

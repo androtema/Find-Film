@@ -10,6 +10,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.androtema.local.data.entity.Film
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.presentation.fragments.DetailsFragment
@@ -51,6 +53,17 @@ class MainActivity : AppCompatActivity() {
         filter.addAction(Intent.ACTION_POWER_CONNECTED)
         filter.addAction(Intent.ACTION_BATTERY_OKAY)
         registerReceiver(receiver, filter)
+
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener(OnCompleteListener { task ->
+                //Если не удастся получить токен, то логируем причину и выходим из слушателя
+                if (!task.isSuccessful) {
+                    Log.d("MainActivity", "Fetching FCM registration token failed", task.exception);
+                    return@OnCompleteListener
+                }
+                //Если получилось, то логируем токен
+                Log.i("MainActivity", task.result!!)
+            })
     }
 
     private fun startSavedFilmInNotification() {
@@ -58,8 +71,7 @@ class MainActivity : AppCompatActivity() {
             intent.getParcelableExtra("film", Film::class.java)?.let { film ->
                 launchDetailsFragment(film)
             }
-        }
-        else {
+        } else {
             intent.getParcelableExtra<Film>("film")?.let { film ->
                 launchDetailsFragment(film)
             }
