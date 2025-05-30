@@ -21,11 +21,11 @@ import androidx.transition.TransitionSet
 import com.temalu.findfilm.R
 import com.androtema.local.data.entity.Film
 import com.temalu.findfilm.databinding.FragmentHomeBinding
-import com.temalu.findfilm.presentation.MainActivity
 import com.temalu.findfilm.presentation.rv_adapters.FilmListRecyclerAdapter
 import com.temalu.findfilm.presentation.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.presentation.utils.AnimationHelper
 import com.temalu.findfilm.presentation.viewmodel.HomeFragmentViewModel
+import com.temalu.findfilm.presentation.MainActivity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable

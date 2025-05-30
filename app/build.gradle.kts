@@ -10,6 +10,20 @@ android {
     namespace = "com.temalu.findfilm"
     compileSdk = 34
 
+    flavorDimensions += "version"
+    productFlavors {
+        create("free") {
+            dimension = "version"
+            applicationIdSuffix = ".free"  // Идентификатор: com.yourapp.free
+            versionNameSuffix = "-free"
+        }
+
+        create("paid") {
+            dimension = "version"
+            applicationIdSuffix = ".paid"
+            versionNameSuffix = "-paid"
+        }
+    }
     defaultConfig {
         applicationId = "com.temalu.findfilm"
         minSdk = 21
@@ -44,7 +58,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -62,14 +75,14 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    
+
     //Glide, Lottie
     implementation(libs.glide)
     implementation(libs.lottie)
 
     //Retrofit, Gson
     implementation(libs.logging.interceptor)
-    implementation (libs.adapter.rxjava3)
+    implementation(libs.adapter.rxjava3)
 
     implementation(libs.gson)
     implementation(libs.retrofit)
@@ -78,7 +91,6 @@ dependencies {
     //Dagger
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
-
 
     //WorkManager
     implementation(libs.androidx.work.runtime.ktx)
@@ -93,12 +105,12 @@ dependencies {
     kapt(libs.androidx.lifecycle.compiler)
 
     //Coroutines
-    implementation (libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
     //RxJava3
-    implementation (libs.rxjava)
-    implementation (libs.rxandroid)
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
 
     // add module
     implementation(project(":remote"))

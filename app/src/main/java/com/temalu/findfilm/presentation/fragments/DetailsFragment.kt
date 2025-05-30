@@ -25,9 +25,9 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.FragmentDetailsBinding
-import com.temalu.findfilm.presentation.MainActivity
 import com.temalu.findfilm.presentation.notifications.NotificationRememberFilm
 import com.temalu.findfilm.presentation.viewmodel.DetailsFragmentViewModel
+import com.temalu.findfilm.presentation.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
