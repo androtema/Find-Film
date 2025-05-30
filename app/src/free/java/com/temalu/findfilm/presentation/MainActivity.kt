@@ -1,9 +1,12 @@
 package com.temalu.findfilm.presentation
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -15,12 +18,18 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.presentation.fragments.DetailsFragment
-import com.temalu.findfilm.presentation.fragments.DifferentFilmsFragment
-import com.temalu.findfilm.presentation.fragments.FavoritesFragment
 import com.temalu.findfilm.presentation.fragments.HomeFragment
-import com.temalu.findfilm.presentation.fragments.LaterWatchFragment
 import com.temalu.findfilm.presentation.fragments.SettingsFragment
 import com.temalu.findfilm.receivers.BatteryReceiver
+import java.util.concurrent.TimeUnit
+import androidx.core.content.edit
+import com.temalu.findfilm.presentation.fragments.DifferentFilmsFragment
+import com.temalu.findfilm.presentation.fragments.FavoritesFragment
+import com.temalu.findfilm.presentation.fragments.LaterWatchFragment
+
+private const val TIME_TOAST_MENU_NAV = 800
+private const val TIME_INTERVAL_CLICK_ON_BACK_FOR_EXIT = 2000
+private const val TIME_PRO_FREE_PERIOD = 10
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,10 +37,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val TAG_HOME_FRAGMENT = "home"
+    private val TAG_SETTINGS_FRAGMENT = "settings"
     private val TAG_FAVORITE_FRAGMENT = "favorites"
     private val TAG_SLECTIONS_FRAGMENT = "selections"
     private val TAG_LATER_FRAGMENT = "watch_later"
-    private val TAG_SETTINGS_FRAGMENT = "settings"
 
     private var isProgrammaticSelection = false // Флаг для отслеживания программного изменения
 
@@ -43,7 +52,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setBottomToast()
+        if (isTrialPeriodActive()) {
+            reactivateProVersion()
+        } else {
+            showCustomToast(this, "Пробный период истек", 1500)
+            setBottomToastFree()
+            // Здесь можно предложить покупку или перенаправить на free версию в магазин приложений
+        }
+
         //запускаем стартовый фрагмент
         changeFragment(HomeFragment(), TAG_HOME_FRAGMENT)
         startSavedFilmInNotification()
@@ -133,13 +149,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setBottomToastFree() {
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            if (isProgrammaticSelection) {
+                return@setOnItemSelectedListener true
+            }
+            when (item.itemId) {
+                R.id.favorites -> {
+                    showCustomToast(this, "Доступно в Pro версии", TIME_TOAST_MENU_NAV)
+                    false
+                }
+
+                R.id.watch_later -> {
+                    showCustomToast(this, "Доступно в Pro версии", TIME_TOAST_MENU_NAV)
+                    false
+                }
+
+                R.id.selections -> {
+                    showCustomToast(this, "Доступно в Pro версии", TIME_TOAST_MENU_NAV)
+                    false
+                }
+
+                R.id.home -> {
+                    val fragment = checkFragmentExistence(TAG_HOME_FRAGMENT)
+                    changeFragment(fragment ?: HomeFragment(), TAG_HOME_FRAGMENT)
+                    true
+                }
+
+                R.id.settings -> {
+                    val fragment = checkFragmentExistence(TAG_SETTINGS_FRAGMENT)
+                    changeFragment(fragment ?: SettingsFragment(), TAG_SETTINGS_FRAGMENT)
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     private fun updateBottomNavigationSelectedItem(fragmentTag: String) {
         isProgrammaticSelection = true // Указываем, что изменение программное
         when (fragmentTag) {
             TAG_HOME_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.home
-            TAG_FAVORITE_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.favorites
-            TAG_LATER_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.watch_later
-            TAG_SLECTIONS_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.selections
             TAG_SETTINGS_FRAGMENT -> binding.bottomNavigation.selectedItemId = R.id.settings
         }
         isProgrammaticSelection = false // Сбрасываем флаг
@@ -188,7 +238,7 @@ class MainActivity : AppCompatActivity() {
         logBackStack()
 
         if (supportFragmentManager.backStackEntryCount == 1) {
-            if (TIME_INTERVAL > System.currentTimeMillis() - backPressedTime) {
+            if (TIME_INTERVAL_CLICK_ON_BACK_FOR_EXIT > System.currentTimeMillis() - backPressedTime) {
                 super.onBackPressedDispatcher.onBackPressed()
                 finish()
             } else {
@@ -212,8 +262,42 @@ class MainActivity : AppCompatActivity() {
         Log.d("BACKSTACK", "Total fragments in back stack: $backStackEntryCount")
     }
 
+    fun showCustomToast(context: Context, message: String, durationMs: Int) {
+        val toast = Toast.makeText(context, message, Toast.LENGTH_LONG)
+        toast.show()
+        Handler(Looper.getMainLooper()).postDelayed({ toast.cancel() }, durationMs.toLong())
+    }
+
+    internal fun reactivateProVersion(){
+        getSharedPreferences(
+            "trial_prefs",
+            MODE_PRIVATE
+        ).edit { putLong("first_launch_time", System.currentTimeMillis()) }
+
+        Toast.makeText(
+            this,
+            "Pro версия (пробный период $TIME_PRO_FREE_PERIOD секунд)",
+            Toast.LENGTH_SHORT
+        ).show()
+        setBottomToast()
+    }
+
+    private fun isTrialPeriodActive(): Boolean {
+        val prefs = getSharedPreferences("trial_prefs", MODE_PRIVATE)
+        val firstLaunchTime = prefs.getLong("first_launch_time", 0L)
+
+        // Если это первый запуск, сохраняем время
+        if (firstLaunchTime == 0L) {
+            prefs.edit { putLong("first_launch_time", System.currentTimeMillis()) }
+            return true
+        }
+
+        val trialDuration = TimeUnit.SECONDS.toMillis(TIME_PRO_FREE_PERIOD.toLong())
+        val currentTime = System.currentTimeMillis()
+        return (currentTime - firstLaunchTime) <= trialDuration
+    }
+
     companion object {
-        const val TIME_INTERVAL = 2000  //интервал времени для нажатия на back второй раз
         val favoritesList: MutableList<Film> = emptyList<Film>().toMutableList()
     }
 }

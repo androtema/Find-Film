@@ -13,11 +13,10 @@
     </declare-styleable>
 
     <style name="FabStyle">
-        <item name="backgroundTint">@color/white</item>
+        <item name="backgroundTint">#F0F0F0</item>
         <item name="tint">@android:color/black</item>
         <item name="maxImageSize">30dp</item>
-        <item name="borderWidth">10dp</item>
-        <item name="layout_anchor">@id/app_bar</item>
+        <item name="borderWidth">4dp</item>
 
         <!-- elevation -->
         <item name="rippleColor">@color/ripple_color</item>
