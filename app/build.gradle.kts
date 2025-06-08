@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.config)
 
     //JUnit, Espresso
     testImplementation(libs.junit)

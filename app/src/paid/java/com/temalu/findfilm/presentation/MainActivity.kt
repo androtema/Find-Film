@@ -1,21 +1,18 @@
 package com.temalu.findfilm.presentation
 
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.androtema.local.data.entity.Film
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.temalu.findfilm.App
 import com.temalu.findfilm.R
 import com.temalu.findfilm.databinding.ActivityMainBinding
 import com.temalu.findfilm.presentation.fragments.DetailsFragment
@@ -25,8 +22,6 @@ import com.temalu.findfilm.presentation.fragments.HomeFragment
 import com.temalu.findfilm.presentation.fragments.LaterWatchFragment
 import com.temalu.findfilm.presentation.fragments.SettingsFragment
 import com.temalu.findfilm.receivers.BatteryReceiver
-import java.util.concurrent.TimeUnit
-import kotlin.text.toLong
 
 private const val TIME_INTERVAL_CLICK_ON_BACK_FOR_EXIT = 2000
 
