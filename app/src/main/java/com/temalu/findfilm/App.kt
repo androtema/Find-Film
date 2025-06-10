@@ -13,6 +13,7 @@ import com.temalu.findfilm.presentation.notifications.NotificationConstants.CHAN
 
 class App : Application() {
     lateinit var dagger: AppComponent
+    var isPromoShown = false
 
     override fun onCreate() {
         super.onCreate()
@@ -38,6 +39,7 @@ class App : Application() {
             //Регистрируем канал
             notificationManager.createNotificationChannel(mChannel)
         }
+
     }
 
     companion object {

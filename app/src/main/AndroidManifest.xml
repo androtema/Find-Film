@@ -28,10 +28,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.MainActivity"
+            android:name="com.temalu.findfilm.presentation.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false">
         </activity>
+
         <receiver android:name=".receivers.LaterTimeReceiver"/>
     </application>
 

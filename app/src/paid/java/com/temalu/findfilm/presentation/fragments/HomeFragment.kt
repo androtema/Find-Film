@@ -20,12 +20,17 @@ import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.temalu.findfilm.R
 import com.androtema.local.data.entity.Film
+import com.bumptech.glide.request.target.CustomViewTarget
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.temalu.findfilm.App
 import com.temalu.findfilm.databinding.FragmentHomeBinding
-import com.temalu.findfilm.presentation.MainActivity
 import com.temalu.findfilm.presentation.rv_adapters.FilmListRecyclerAdapter
 import com.temalu.findfilm.presentation.rv_adapters.TopSpacingItemDecoration
 import com.temalu.findfilm.presentation.utils.AnimationHelper
 import com.temalu.findfilm.presentation.viewmodel.HomeFragmentViewModel
+import com.temalu.findfilm.presentation.MainActivity
+import com.temalu.findfilm.presentation.customviews.PromoView
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -39,6 +44,7 @@ class HomeFragment : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var mainRecycler: RecyclerView
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
+    private lateinit var promoView: PromoView
 
     private val bindingHomeFragment: FragmentHomeBinding get() = _bindingHomeFragment!!
     private var _bindingHomeFragment: FragmentHomeBinding? = null
@@ -76,6 +82,52 @@ class HomeFragment : Fragment() {
         addRecyclerAndDecorator(scene)
         recyclerViewSetScroollListener()
         initSearchView(scene)
+        promoView(scene)
+    }
+
+    private fun promoView(scene: Scene) {
+        if (!App.instance.isPromoShown) {
+            Log.d("promoView", "isPromoShown")
+            //Получаем доступ к Remote Config
+
+            val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+            //Устанавливаем настройки
+            val configSettings = FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(0)
+                .build()
+            firebaseRemoteConfig.setConfigSettingsAsync(configSettings)
+            //Вызываем метод, который получит данные с сервера и вешаем слушатель
+            firebaseRemoteConfig.fetch().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    firebaseRemoteConfig.activate()
+                    val filmLink = firebaseRemoteConfig.getString("film_link")
+                    Log.d("promoView", "Получен film_link: $filmLink")
+                    if (filmLink.isNotBlank()) {
+                        App.instance.isPromoShown = true
+                        promoView = scene.sceneRoot.findViewById(R.id.promo_view_group)
+                        promoView.apply {
+                            //Делаем видимой
+                            visibility = View.VISIBLE
+                            //Анимируем появление
+                            animate()
+                                .setDuration(1500)
+                                .alpha(1f)
+                                .start()
+                            //Вызываем метод, который загрузит постер в ImageView
+                            setLinkForPoster(filmLink)
+                            //Кнопка, по нажатии на которую промо уберется (желательно сделать отдельную кнопку с крестиком)
+                            watchButton.setOnClickListener {
+                                visibility = View.GONE
+                            }
+                        }
+                    } else {
+                        Log.d("promoView", "film_link пустой или отсутствует")
+                    }
+                } else {
+                    Log.e("promoView", "Ошибка получения данных Firebase: ${it.exception?.message}")
+                }
+            }
+        }
     }
 
     private fun workWithViewModel() {
